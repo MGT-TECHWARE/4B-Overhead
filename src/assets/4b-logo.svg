@@ -1,0 +1,37 @@
+<svg width="520" height="230" viewBox="0 0 520 230" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">4B Overhead Doors, LLC</title>
+  <desc id="desc">4B Overhead Doors logo with a metallic mark and garage door lines.</desc>
+  <defs>
+    <linearGradient id="metal" x1="68" y1="20" x2="440" y2="147" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6c737b"/>
+      <stop offset="0.17" stop-color="#f6f7f8"/>
+      <stop offset="0.34" stop-color="#939aa1"/>
+      <stop offset="0.52" stop-color="#ffffff"/>
+      <stop offset="0.7" stop-color="#777e86"/>
+      <stop offset="0.86" stop-color="#e6e8ea"/>
+      <stop offset="1" stop-color="#59616a"/>
+    </linearGradient>
+    <linearGradient id="lineMetal" x1="145" y1="54" x2="365" y2="112" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f7f7f7"/>
+      <stop offset="0.4" stop-color="#7e858d"/>
+      <stop offset="0.75" stop-color="#fbfbfb"/>
+      <stop offset="1" stop-color="#606872"/>
+    </linearGradient>
+    <filter id="shadow" x="46" y="2" width="420" height="196" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="6" stdDeviation="3" flood-color="#000000" flood-opacity="0.65"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <path d="M201 18H232V125H196V96H60V68L165 18H201ZM196 67V44L133 67H196Z" fill="url(#metal)" stroke="#d7d7d7" stroke-width="2"/>
+    <path d="M243 18H365C394 18 416 39 416 66C416 80 409 93 397 101C413 109 423 122 423 139C423 167 400 188 370 188H243V18ZM280 48V86H361C372 86 380 78 380 67C380 56 372 48 361 48H280ZM280 116V158H366C378 158 386 149 386 137C386 125 378 116 366 116H280Z" fill="url(#metal)" stroke="#d7d7d7" stroke-width="2"/>
+    <rect x="226" y="50" width="166" height="17" fill="#101214" stroke="#d7d7d7" stroke-width="2"/>
+    <rect x="226" y="75" width="151" height="16" fill="#101214" stroke="#d7d7d7" stroke-width="2"/>
+    <rect x="226" y="98" width="151" height="16" fill="#101214" stroke="#d7d7d7" stroke-width="2"/>
+    <path d="M224 54H381V63H224V54ZM224 78H369V87H224V78ZM224 101H369V110H224V101Z" fill="url(#lineMetal)"/>
+  </g>
+
+  <path d="M18 198H500" stroke="url(#metal)" stroke-width="3" stroke-linecap="square"/>
+  <text x="20" y="224" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="2.5">4B OVERHEAD DOORS</text>
+  <text x="404" y="224" fill="url(#metal)" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" letter-spacing="2">LLC</text>
+</svg>
