@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* Inter is loaded via <link rel="stylesheet"> in index.html with media="print"
+   onload swap to avoid render-blocking. Do NOT @import it here — that adds an
+   extra serial CSS request and blocks first paint. */
 @import "tailwindcss";
 
 @theme {
