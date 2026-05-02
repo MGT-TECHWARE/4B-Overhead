@@ -38,28 +38,70 @@ interface RouteHeadInputs {
   jsonLd: string;
 }
 
+interface AssetIndex {
+  /** Desktop hero (1280w) hashed URL. */
+  hero?: string;
+  /** Mobile hero (768w) hashed URL. */
+  heroMobile?: string;
+  /** Latin variable Inter woff2 hashed URL — first byte the page actually needs. */
+  fontLatin?: string;
+}
+
 /**
- * Discover the hashed hero-garage asset filename Vite produced this build,
- * so we can preload it from <head> as the LCP image. Falls back to no
- * preload if the asset isn't found (e.g. someone renamed the import).
+ * Discover the hashed asset filenames Vite produced this build so we can
+ * preload them from <head> ahead of CSS/JS parse. Falls back gracefully if
+ * the matchers find nothing (e.g. renamed imports).
  */
-async function findHashedHeroUrl(distRoot: string): Promise<string | null> {
+async function buildAssetIndex(distRoot: string): Promise<AssetIndex> {
   const { readdir } = await import('node:fs/promises');
   try {
     const files = await readdir(join(distRoot, 'assets'));
-    const match = files.find(f => /^hero-garage-[\w-]+\.webp$/.test(f));
-    return match ? `/assets/${match}` : null;
+    const heroMobile = files.find(f => /^hero-garage-768-[\w-]+\.webp$/.test(f));
+    // Match desktop hero only — exclude the -768- mobile variant.
+    const hero = files.find(
+      f => /^hero-garage-[\w-]+\.webp$/.test(f) && !/^hero-garage-768/.test(f)
+    );
+    // The latin variable-axis Inter weight file is what English text needs.
+    // @fontsource-variable/inter emits inter-latin-wght-normal-XXXX.woff2.
+    const fontLatin = files.find(f => /^inter-latin-wght-normal-[\w-]+\.woff2$/.test(f));
+    return {
+      hero: hero ? `/assets/${hero}` : undefined,
+      heroMobile: heroMobile ? `/assets/${heroMobile}` : undefined,
+      fontLatin: fontLatin ? `/assets/${fontLatin}` : undefined
+    };
   } catch {
-    return null;
+    return {};
   }
 }
 
-function buildHead(inputs: RouteHeadInputs, opts?: { heroPreload?: string | null; isHome?: boolean }): string {
+function buildHead(inputs: RouteHeadInputs, opts?: { assets?: AssetIndex; isHome?: boolean }): string {
   const { title, description, canonical, ogUrl, jsonLd } = inputs;
-  const preloadTag =
-    opts?.isHome && opts?.heroPreload
-      ? `<link rel="preload" as="image" href="${opts.heroPreload}" type="image/webp" fetchpriority="high" />\n    `
-      : '';
+
+  const preloads: string[] = [];
+
+  // Font preload runs on every route — Inter is the body font sitewide.
+  if (opts?.assets?.fontLatin) {
+    preloads.push(
+      `<link rel="preload" as="font" type="font/woff2" href="${opts.assets.fontLatin}" crossorigin />`
+    );
+  }
+
+  // LCP image preload is home-only (hero only renders there).
+  if (opts?.isHome && opts.assets?.hero) {
+    const desktop = opts.assets.hero;
+    const mobile = opts.assets.heroMobile;
+    if (mobile) {
+      preloads.push(
+        `<link rel="preload" as="image" type="image/webp" imagesrcset="${mobile} 768w, ${desktop} 1280w" imagesizes="100vw" fetchpriority="high" />`
+      );
+    } else {
+      preloads.push(
+        `<link rel="preload" as="image" href="${desktop}" type="image/webp" fetchpriority="high" />`
+      );
+    }
+  }
+
+  const preloadTag = preloads.length ? preloads.join('\n    ') + '\n    ' : '';
   // Note: the existing index.html ships with placeholder <title> / og: tags.
   // We REPLACE those rather than append, to avoid duplicate-tag confusion in
   // SERPs and validators. The canonical and JSON-LD are appended (they don't
@@ -112,7 +154,7 @@ function fullUrl(path: string): string {
 async function processRoute(
   routeKey: RouteKey,
   indexTemplate: string,
-  heroPreload: string | null
+  assets: AssetIndex
 ): Promise<string> {
   const route = ROUTES[routeKey];
   const canonical = fullUrl(route.path);
@@ -124,7 +166,7 @@ async function processRoute(
       ogUrl: canonical,
       jsonLd: jsonLdString(routeKey)
     },
-    { heroPreload, isHome: routeKey === 'home' }
+    { assets, isHome: routeKey === 'home' }
   );
 
   const html = injectInto(indexTemplate, head);
@@ -139,16 +181,23 @@ async function processRoute(
   return outPath;
 }
 
-async function processCity(city: City, indexTemplate: string): Promise<string> {
+async function processCity(
+  city: City,
+  indexTemplate: string,
+  assets: AssetIndex
+): Promise<string> {
   const path = `/service-areas/${city.slug}`;
   const canonical = fullUrl(path);
-  const head = buildHead({
-    title: cityTitle(city),
-    description: cityDescription(city),
-    canonical,
-    ogUrl: canonical,
-    jsonLd: jsonLdStringCity(city)
-  });
+  const head = buildHead(
+    {
+      title: cityTitle(city),
+      description: cityDescription(city),
+      canonical,
+      ogUrl: canonical,
+      jsonLd: jsonLdStringCity(city)
+    },
+    { assets, isHome: false }
+  );
 
   const html = injectInto(indexTemplate, head);
   const outPath = join(DIST, 'service-areas', city.slug, 'index.html');
@@ -248,14 +297,15 @@ async function main(): Promise<void> {
   const indexTemplatePath = join(DIST, 'index.html');
   const indexTemplate = await readFile(indexTemplatePath, 'utf8');
 
-  const heroPreload = await findHashedHeroUrl(DIST);
+  const assets = await buildAssetIndex(DIST);
+  console.log('[post-build] assets:', assets);
 
   const written: string[] = [];
   for (const key of Object.keys(ROUTES) as RouteKey[]) {
-    written.push(await processRoute(key, indexTemplate, heroPreload));
+    written.push(await processRoute(key, indexTemplate, assets));
   }
   for (const city of CITIES) {
-    written.push(await processCity(city, indexTemplate));
+    written.push(await processCity(city, indexTemplate, assets));
   }
   written.push(await generateSitemap());
   written.push(await generateLlmsTxt());

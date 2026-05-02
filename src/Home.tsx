@@ -30,6 +30,7 @@ const FEATURED_CITIES = [
 ].map(slug => CITIES.find(c => c.slug === slug)!).filter(Boolean);
 const ALL_CITY_COUNT = CITIES.length;
 import heroImage from './assets/hero-garage.webp';
+import heroImageMobile from './assets/hero-garage-768.webp';
 import cardResidential from './assets/card-residential.webp';
 import cardCommercial from './assets/card-commercial.webp';
 import cardRepairs from './assets/card-repairs.webp';
@@ -375,9 +376,11 @@ export default function Home() {
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-zinc-950 to-transparent z-10"></div>
           <img
             src={heroImage}
+            srcSet={`${heroImageMobile} 768w, ${heroImage} 1280w`}
+            sizes="100vw"
             alt="Modern luxury home with premium garage doors"
-            width={1707}
-            height={1280}
+            width={1280}
+            height={960}
             fetchPriority="high"
             decoding="async"
             className="w-full h-full object-cover"
