@@ -20,8 +20,6 @@ import {
   ImageIcon,
   Star,
   HelpCircle,
-  Plus,
-  Minus
 } from 'lucide-react';
 import { FAQS } from './seo/site';
 import heroImage from './assets/hero-garage.webp';
@@ -200,35 +198,109 @@ function ContactForm() {
 interface FAQItemProps {
   q: string;
   a: string;
-  defaultOpen?: boolean;
+  index: number;
+  open: boolean;
+  onToggle: (index: number) => void;
 }
 
 function FAQItem(props: FAQItemProps) {
-  const { q, a, defaultOpen } = props;
-  const [open, setOpen] = React.useState(!!defaultOpen);
+  const { q, a, index, open, onToggle } = props;
+  const panelId = `faq-panel-${index}`;
+  const buttonId = `faq-button-${index}`;
   return (
-    <div className="border border-zinc-800 rounded-2xl bg-zinc-900/40 transition-colors hover:border-zinc-700">
-      <button
-        type="button"
-        onClick={() => setOpen(o => !o)}
-        aria-expanded={open}
-        className="w-full flex items-center justify-between gap-6 text-left px-6 md:px-7 py-5 md:py-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded-2xl"
-      >
-        <span className="text-base md:text-lg font-semibold text-white pr-2">{q}</span>
-        <span className="shrink-0 w-9 h-9 rounded-full border border-zinc-700 bg-zinc-900 flex items-center justify-center text-zinc-300">
-          {open ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-        </span>
-      </button>
-      {/* Answer is rendered into the DOM unconditionally so search/AI crawlers
-          and the FAQPage JSON-LD see the same text — only visibility toggles. */}
+    <div className="group">
+      <h3 className="m-0">
+        <button
+          id={buttonId}
+          type="button"
+          onClick={() => onToggle(index)}
+          aria-expanded={open}
+          aria-controls={panelId}
+          className="w-full flex items-start justify-between gap-6 text-left py-6 md:py-7 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded-md"
+        >
+          <span className="text-base md:text-lg font-medium text-white leading-snug">
+            {q}
+          </span>
+          <span
+            className={`shrink-0 mt-0.5 w-8 h-8 rounded-full border border-zinc-800 bg-zinc-900/60 flex items-center justify-center text-zinc-400 transition-all duration-300 group-hover:text-white group-hover:border-zinc-600 ${
+              open ? 'rotate-180 bg-white text-zinc-950 border-white' : ''
+            }`}
+            aria-hidden="true"
+          >
+            <ChevronDown className="w-4 h-4" />
+          </span>
+        </button>
+      </h3>
+      {/* Answer is rendered into the DOM unconditionally so AI crawlers and
+          the FAQPage JSON-LD see the same text — only visibility toggles. */}
       <div
-        className={`px-6 md:px-7 overflow-hidden transition-[max-height,padding] duration-300 ease-out ${
-          open ? 'max-h-96 pb-6 md:pb-7' : 'max-h-0 pb-0'
+        id={panelId}
+        role="region"
+        aria-labelledby={buttonId}
+        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
+          open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
         }`}
       >
-        <p className="text-zinc-400 leading-relaxed font-light">{a}</p>
+        <div className="overflow-hidden">
+          <p className="text-zinc-400 leading-relaxed font-light pb-6 md:pb-7 pr-12 max-w-2xl">
+            {a}
+          </p>
+        </div>
       </div>
     </div>
+  );
+}
+
+function FAQSection() {
+  // Single-open accordion: matches user mental model and keeps the panel
+  // height steady. Schema/JSON-LD is unaffected — every Q&A is in the DOM.
+  const [openIndex, setOpenIndex] = React.useState<number | null>(null);
+  const onToggle = (i: number) => setOpenIndex(curr => (curr === i ? null : i));
+
+  return (
+    <section
+      id="faq"
+      aria-labelledby="faq-heading"
+      className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 bg-[#0c0c0c] border-y border-zinc-900"
+    >
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-14 md:mb-20">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">FAQ</p>
+          <h2
+            id="faq-heading"
+            className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.05] mb-5"
+          >
+            Common questions.
+          </h2>
+          <p className="text-zinc-400 font-light leading-relaxed max-w-xl mx-auto">
+            Quick, honest answers about service areas, pricing, repair turnaround,
+            and what makes 4B Overhead Doors different.
+          </p>
+        </div>
+
+        <div className="divide-y divide-zinc-800/80 border-y border-zinc-800/80">
+          {FAQS.map((item, i) => (
+            <FAQItem
+              key={item.q}
+              index={i}
+              q={item.q}
+              a={item.a}
+              open={openIndex === i}
+              onToggle={onToggle}
+            />
+          ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-300 hover:text-white underline decoration-zinc-700 hover:decoration-white underline-offset-4 transition-colors"
+          >
+            <HelpCircle className="w-4 h-4" /> Don't see your question? Ask us.
+          </a>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -526,32 +598,8 @@ export default function Home() {
       </section>
 
       {/* FAQ Section — content mirrored in src/seo/site.ts FAQS for FAQPage JSON-LD */}
-      <section id="faq" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-          <div className="lg:sticky lg:top-32 lg:self-start">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">FAQ</p>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.05] mb-6">
-              Common <br />
-              <span className="text-zinc-500">questions.</span>
-            </h2>
-            <p className="text-zinc-400 font-light leading-relaxed mb-8">
-              Quick, honest answers about service areas, pricing, repair turnaround, and what makes 4B Overhead Doors different.
-            </p>
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-white underline decoration-zinc-700 hover:decoration-white underline-offset-4 transition-colors"
-            >
-              <HelpCircle className="w-4 h-4" /> Don't see your question? Ask us.
-            </a>
-          </div>
+      <FAQSection />
 
-          <div className="lg:col-span-2 space-y-3">
-            {FAQS.map((item, i) => (
-              <FAQItem key={item.q} q={item.q} a={item.a} defaultOpen={i === 0} />
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Coverage Section */}
       <section id="service-areas" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto text-center">
