@@ -6,7 +6,16 @@
  * after any change. Schema MUST match content visible on the page.
  */
 
-import { SITE_URL, BUSINESS, ROUTES, REVIEWS, FAQS, type RouteKey } from './site';
+import {
+  SITE_URL,
+  BUSINESS,
+  ROUTES,
+  REVIEWS,
+  FAQS,
+  type RouteKey,
+  type RouteMeta
+} from './site';
+import type { City } from './cities';
 
 const BUSINESS_ID = `${SITE_URL}/#business`;
 const ORG_ID = `${SITE_URL}/#organization`;
@@ -193,8 +202,7 @@ function faqNode() {
   };
 }
 
-function webpageNode(routeKey: RouteKey) {
-  const route = ROUTES[routeKey];
+function webpageNode(route: RouteMeta) {
   return {
     '@type': 'WebPage',
     '@id': `${url(route.path)}#webpage`,
@@ -209,14 +217,64 @@ function webpageNode(routeKey: RouteKey) {
   };
 }
 
-/** Compose the @graph for a given route. */
+/**
+ * Per-city LocalBusiness service node. Each city page advertises a
+ * Service entity scoped to that city's geo so search engines can attach
+ * the listing to local intent queries like "garage door repair in <city>".
+ * The Service references the global LocalBusiness as its provider rather
+ * than duplicating Reviews / AggregateRating, which avoids review-stuffing.
+ */
+function cityServiceNodes(city: City) {
+  const cityName = `${city.name}, TX`;
+  const baseService = {
+    provider: { '@id': BUSINESS_ID },
+    areaServed: {
+      '@type': 'City',
+      name: cityName,
+      containedInPlace: { '@type': 'AdministrativeArea', name: city.county }
+    }
+  };
+  return [
+    {
+      '@type': 'Service',
+      '@id': `${SITE_URL}/service-areas/${city.slug}#service-residential`,
+      name: `Residential Garage Door Installation in ${cityName}`,
+      serviceType: 'Garage door installation',
+      ...baseService
+    },
+    {
+      '@type': 'Service',
+      '@id': `${SITE_URL}/service-areas/${city.slug}#service-commercial`,
+      name: `Commercial Overhead Door Installation in ${cityName}`,
+      serviceType: 'Commercial overhead door installation',
+      ...baseService
+    },
+    {
+      '@type': 'Service',
+      '@id': `${SITE_URL}/service-areas/${city.slug}#service-repair`,
+      name: `Garage Door Repair & Maintenance in ${cityName}`,
+      serviceType: 'Garage door repair',
+      ...baseService
+    },
+    {
+      '@type': 'Service',
+      '@id': `${SITE_URL}/service-areas/${city.slug}#service-springs`,
+      name: `Garage Door Spring Repair in ${cityName}`,
+      serviceType: 'Garage door spring repair',
+      ...baseService
+    }
+  ];
+}
+
+/** Compose the @graph for a top-level static route (home / work / serviceAreas). */
 export function jsonLdGraph(routeKey: RouteKey): object {
+  const route = ROUTES[routeKey];
   const baseGraph: object[] = [
     organizationNode(),
     personNode(),
     websiteNode(),
     localBusinessNode(),
-    webpageNode(routeKey)
+    webpageNode(route)
   ];
 
   if (routeKey === 'home') {
@@ -229,7 +287,52 @@ export function jsonLdGraph(routeKey: RouteKey): object {
   };
 }
 
+/** Compose the @graph for a city page. Includes city-scoped Service nodes. */
+export function jsonLdGraphCity(city: City): object {
+  const path = `/service-areas/${city.slug}`;
+  const route: RouteMeta = {
+    path,
+    title: cityTitle(city),
+    description: cityDescription(city),
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Service Areas', path: '/service-areas' },
+      { name: city.name, path }
+    ]
+  };
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      organizationNode(),
+      personNode(),
+      websiteNode(),
+      localBusinessNode(),
+      webpageNode(route),
+      ...cityServiceNodes(city),
+      faqNode()
+    ]
+  };
+}
+
+/** Per-city <title>. Kept ≤65 visible chars where possible. */
+export function cityTitle(city: City): string {
+  return `Garage Door Repair & Install in ${city.name}, TX | 4B Overhead Doors`;
+}
+
+/** Per-city <meta description>. */
+export function cityDescription(city: City): string {
+  const where = city.nearby.length
+    ? `${city.name}, ${city.county}, and surrounding communities including ${city.nearby.slice(0, 2).join(' and ')}`
+    : `${city.name}, ${city.county}`;
+  return `Garage door installation, repair, and spring service in ${where}. Family-owned, fully insured, residential & commercial. Free quotes — call (940) 781-1186.`;
+}
+
 /** Stable, pretty-printed JSON for embedding in <script type="application/ld+json">. */
 export function jsonLdString(routeKey: RouteKey): string {
   return JSON.stringify(jsonLdGraph(routeKey), null, 2);
+}
+
+export function jsonLdStringCity(city: City): string {
+  return JSON.stringify(jsonLdGraphCity(city), null, 2);
 }

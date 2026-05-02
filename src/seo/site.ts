@@ -40,6 +40,13 @@ export const BUSINESS = {
   hours: 'Mo-Sa 07:00-19:00'
 } as const;
 
+export interface RouteMeta {
+  path: string;
+  title: string;
+  description: string;
+  breadcrumb: ReadonlyArray<{ name: string; path: string }>;
+}
+
 export const ROUTES = {
   home: {
     // Title length kept ≤65 chars so Google won't truncate it on most SERP widths.
@@ -56,8 +63,17 @@ export const ROUTES = {
       { name: 'Home', path: '/' },
       { name: 'Our Work', path: '/work' }
     ]
+  },
+  serviceAreas: {
+    path: '/service-areas',
+    title: 'Service Areas — North & West Texas | 4B Overhead Doors',
+    description: 'Garage door installation and repair across North & West Texas. Wichita Falls, Denton, Fort Worth, Dallas, Lubbock, Amarillo, Midland, and 13 more cities. Call (940) 781-1186.',
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Service Areas', path: '/service-areas' }
+    ]
   }
-} as const;
+} as const satisfies Record<string, RouteMeta>;
 
 export type RouteKey = keyof typeof ROUTES;
 

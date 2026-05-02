@@ -15,13 +15,21 @@ import {
   Mail,
   Send,
   ChevronDown,
-  Compass,
-  Truck,
   ImageIcon,
   Star,
   HelpCircle,
 } from 'lucide-react';
 import { FAQS } from './seo/site';
+import { CITIES } from './seo/cities';
+
+// Featured cities surfaced in the home #service-areas teaser. Hand-picked for
+// breadth across both regions — full list lives at /service-areas.
+const FEATURED_CITIES = [
+  'wichita-falls', 'denton', 'fort-worth', 'dallas',
+  'sherman', 'gainesville', 'lubbock', 'amarillo',
+  'abilene', 'midland', 'odessa', 'san-angelo'
+].map(slug => CITIES.find(c => c.slug === slug)!).filter(Boolean);
+const ALL_CITY_COUNT = CITIES.length;
 import heroImage from './assets/hero-garage.webp';
 import cardResidential from './assets/card-residential.webp';
 import cardCommercial from './assets/card-commercial.webp';
@@ -602,46 +610,41 @@ export default function Home() {
 
 
       {/* Coverage Section */}
-      <section id="service-areas" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto text-center">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Service Areas</p>
-        <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-none mb-6">
-          Based in West & <br />
-          North <span className="text-zinc-500">Texas</span>
-        </h2>
-        <p className="text-zinc-400 max-w-2xl mx-auto mb-16 font-light">
-          Our home base covers the western and northern halves of Texas — but for the right project, we'll travel well beyond. If you're nearby, chances are we can be there.
-        </p>
+      <section id="service-areas" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
+        <div className="text-center mb-14">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Service Areas</p>
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-none mb-6">
+            Based in West & <br />
+            North <span className="text-zinc-500">Texas</span>
+          </h2>
+          <p className="text-zinc-400 max-w-2xl mx-auto font-light">
+            We cover {FEATURED_CITIES.length}+ major cities across North and West Texas — and travel for the right project. Pick your city for a tailored page, or call (940) 781-1186.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {['North Texas', 'West Texas', 'Texas Panhandle', 'Red River Region'].map((region, i) => (
-            <a key={i} href="#contact" className="flex flex-col items-center justify-center gap-3 bg-zinc-900/50 border border-zinc-800 p-5 rounded-2xl hover:bg-zinc-900 hover:border-zinc-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
-              <MapPin className="w-5 h-5 text-zinc-500" />
-              <span className="font-medium text-zinc-200 text-sm md:text-base">{region}</span>
-            </a>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-10">
+          {FEATURED_CITIES.map(c => (
+            <Link
+              key={c.slug}
+              to={`/service-areas/${c.slug}`}
+              className="group flex flex-col items-start justify-center gap-1 bg-zinc-900/50 border border-zinc-800 p-4 rounded-2xl hover:bg-zinc-900 hover:border-zinc-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+            >
+              <div className="flex items-center gap-2 text-zinc-500">
+                <MapPin className="w-4 h-4" />
+                <span className="text-[10px] font-semibold tracking-widest uppercase">{c.region}</span>
+              </div>
+              <span className="font-semibold text-white text-sm md:text-base">{c.name}, TX</span>
+            </Link>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <a href="#contact" className="flex items-center gap-5 bg-zinc-900/50 border border-zinc-800 border-dashed p-6 rounded-2xl text-left hover:bg-zinc-900 hover:border-zinc-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
-            <div className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
-              <Compass className="w-5 h-5 text-zinc-300" />
-            </div>
-            <div>
-              <div className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Beyond Texas</div>
-              <div className="text-zinc-200 font-medium leading-snug">Surrounding states — Oklahoma & nearby regions</div>
-            </div>
-          </a>
-          <a href="tel:9407811186" className="flex items-center gap-5 bg-zinc-900/50 border border-zinc-800 border-dashed p-6 rounded-2xl text-left hover:bg-zinc-900 hover:border-zinc-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
-            <div className="w-12 h-12 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0">
-              <Truck className="w-5 h-5 text-zinc-300" />
-            </div>
-            <div>
-              <div className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Not on the list?</div>
-              <span className="text-white font-medium leading-snug underline decoration-zinc-600 underline-offset-4 hover:decoration-white">
-                Call us — we'll come if we can.
-              </span>
-            </div>
-          </a>
+        <div className="text-center">
+          <Link
+            to="/service-areas"
+            className="inline-flex items-center gap-2 bg-zinc-900 border border-zinc-700 hover:border-white text-white px-6 py-3 rounded-full text-sm font-semibold tracking-wide transition-colors"
+          >
+            See all {ALL_CITY_COUNT} cities <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </section>
 

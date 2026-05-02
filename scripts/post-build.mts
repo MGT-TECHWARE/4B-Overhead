@@ -19,7 +19,13 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SITE_URL, ROUTES, type RouteKey } from '../src/seo/site';
-import { jsonLdString } from '../src/seo/jsonld';
+import { CITIES, type City } from '../src/seo/cities';
+import {
+  jsonLdString,
+  jsonLdStringCity,
+  cityTitle,
+  cityDescription
+} from '../src/seo/jsonld';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = resolve(__dirname, '..', 'dist');
@@ -106,25 +112,108 @@ async function processRoute(routeKey: RouteKey, indexTemplate: string): Promise<
   return outPath;
 }
 
+async function processCity(city: City, indexTemplate: string): Promise<string> {
+  const path = `/service-areas/${city.slug}`;
+  const canonical = fullUrl(path);
+  const head = buildHead({
+    title: cityTitle(city),
+    description: cityDescription(city),
+    canonical,
+    ogUrl: canonical,
+    jsonLd: jsonLdStringCity(city)
+  });
+
+  const html = injectInto(indexTemplate, head);
+  const outPath = join(DIST, 'service-areas', city.slug, 'index.html');
+  await mkdir(dirname(outPath), { recursive: true });
+  await writeFile(outPath, html, 'utf8');
+  return outPath;
+}
+
 async function generateSitemap(): Promise<string> {
   const today = new Date().toISOString().slice(0, 10);
-  const urls = (Object.keys(ROUTES) as RouteKey[]).map(key => {
+  const entries: Array<{ loc: string; priority: string; changefreq: string }> = [];
+
+  for (const key of Object.keys(ROUTES) as RouteKey[]) {
     const route = ROUTES[key];
-    return `  <url>
-    <loc>${fullUrl(route.path)}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${route.path === '/' ? 'weekly' : 'monthly'}</changefreq>
-    <priority>${route.path === '/' ? '1.0' : '0.8'}</priority>
-  </url>`;
-  });
+    entries.push({
+      loc: fullUrl(route.path),
+      priority: route.path === '/' ? '1.0' : '0.8',
+      changefreq: route.path === '/' ? 'weekly' : 'monthly'
+    });
+  }
+  for (const city of CITIES) {
+    entries.push({
+      loc: fullUrl(`/service-areas/${city.slug}`),
+      priority: '0.7',
+      changefreq: 'monthly'
+    });
+  }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.join('\n')}
+${entries
+  .map(
+    e => `  <url>
+    <loc>${e.loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${e.changefreq}</changefreq>
+    <priority>${e.priority}</priority>
+  </url>`
+  )
+  .join('\n')}
 </urlset>
 `;
   const outPath = join(DIST, 'sitemap.xml');
   await writeFile(outPath, xml, 'utf8');
+  return outPath;
+}
+
+async function generateLlmsTxt(): Promise<string> {
+  // Regenerate llms.txt with the live city roster so the LLM-facing roadmap
+  // never drifts from the actual sitemap.
+  const cityLines = CITIES.map(
+    c => `- [${c.name}, TX](${SITE_URL}/service-areas/${c.slug}) — ${c.region}, ${c.county}`
+  ).join('\n');
+
+  const body = `# 4B Overhead Doors
+
+> Family-owned, fully insured garage door installation, repair, and maintenance company serving West Texas, North Texas, the Texas Panhandle, and the Red River region. Residential, commercial, and TxDOT highway department projects. Operated by Colten Beaty. Phone: (940) 781-1186.
+
+## About
+
+- Legal name: 4B Overhead Doors, LLC
+- Owner / Operator: Colten Beaty
+- Phone: (940) 781-1186
+- Email (business): 4boverheaddoorsllc@gmail.com
+- Service area: West Texas, North Texas, Texas Panhandle, Red River region; will travel to Oklahoma and surrounding states
+- Status: Family-owned, fully insured
+- Notable clients: Texas Department of Transportation (TxDOT) highway department projects
+
+## Services
+
+- Residential garage door installation
+- Commercial overhead door installation (heavy-duty, industrial)
+- Garage door repair & maintenance (springs, cables, openers, panels)
+- Garage door spring repair (emergency)
+- New construction installs (works with builders / GCs)
+
+## Core pages
+
+- [Home](${SITE_URL}/): services overview, why-us, reviews, FAQ, contact form
+- [Our Work](${SITE_URL}/work): photo gallery of recent residential and commercial installs
+- [Service Areas](${SITE_URL}/service-areas): full list of cities served across North & West Texas
+
+## City pages (${CITIES.length})
+
+${cityLines}
+
+## Optional
+
+- [Facebook reviews](https://www.facebook.com/4BGarageDoors/reviews)
+`;
+  const outPath = join(DIST, 'llms.txt');
+  await writeFile(outPath, body, 'utf8');
   return outPath;
 }
 
@@ -136,9 +225,13 @@ async function main(): Promise<void> {
   for (const key of Object.keys(ROUTES) as RouteKey[]) {
     written.push(await processRoute(key, indexTemplate));
   }
+  for (const city of CITIES) {
+    written.push(await processCity(city, indexTemplate));
+  }
   written.push(await generateSitemap());
+  written.push(await generateLlmsTxt());
 
-  console.log('[post-build] wrote:');
+  console.log(`[post-build] wrote ${written.length} files`);
   for (const p of written) console.log('  -', p);
 }
 
