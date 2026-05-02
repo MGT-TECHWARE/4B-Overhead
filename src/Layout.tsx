@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Phone, Mail, MapPin, Menu, X } from 'lucide-react';
 import logoUrl from './assets/4b-logo.webp';
@@ -9,6 +9,8 @@ const navLinks: NavItem[] = [
   { label: 'Services', to: '/#services' },
   { label: 'Our Work', to: '/work' },
   { label: 'Why Us', to: '/#why-us' },
+  { label: 'Reviews', to: '/#reviews' },
+  { label: 'FAQ', to: '/#faq' },
   { label: 'Service Areas', to: '/#service-areas' },
   { label: 'Contact', to: '/#contact' }
 ];
@@ -238,7 +240,7 @@ export default function Layout() {
               />
             </Link>
             <p className="text-zinc-500 font-light max-w-sm">
-              Premium residential and commercial garage door solutions serving West and North Texas. Family-owned, operated, and fully insured.
+              Premium residential and commercial garage door solutions serving West and North Texas. Family-owned and operated by <span className="text-zinc-300">Colten Beaty</span>, fully insured, and trusted on jobs from custom homes to TxDOT highway projects.
             </p>
           </div>
 
@@ -248,6 +250,8 @@ export default function Layout() {
               <li><a href="/#services" onClick={(e) => handleNavClick(e, '/#services')} className="text-zinc-500 hover:text-white transition-colors text-sm">Services</a></li>
               <li><Link to="/work" className="text-zinc-500 hover:text-white transition-colors text-sm">Our Work</Link></li>
               <li><a href="/#why-us" onClick={(e) => handleNavClick(e, '/#why-us')} className="text-zinc-500 hover:text-white transition-colors text-sm">Why Choose Us</a></li>
+              <li><a href="/#reviews" onClick={(e) => handleNavClick(e, '/#reviews')} className="text-zinc-500 hover:text-white transition-colors text-sm">Reviews</a></li>
+              <li><a href="/#faq" onClick={(e) => handleNavClick(e, '/#faq')} className="text-zinc-500 hover:text-white transition-colors text-sm">FAQ</a></li>
               <li><a href="/#service-areas" onClick={(e) => handleNavClick(e, '/#service-areas')} className="text-zinc-500 hover:text-white transition-colors text-sm">Service Areas</a></li>
               <li><a href="/#contact" onClick={(e) => handleNavClick(e, '/#contact')} className="text-zinc-500 hover:text-white transition-colors text-sm">Contact</a></li>
             </ul>

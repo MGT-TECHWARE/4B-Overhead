@@ -55,7 +55,7 @@ export default function Work() {
       <section className="relative pt-36 md:pt-44 pb-16 md:pb-20 px-6 md:px-12 border-b border-zinc-900 overflow-hidden">
         <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
         <div className="max-w-7xl mx-auto relative">
-          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Our Work</h3>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Our Work</p>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-white leading-[0.95] mb-6">
             Real installs. <br />
             <span className="text-zinc-500">Real results.</span>

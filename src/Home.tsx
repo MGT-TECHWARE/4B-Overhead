@@ -17,8 +17,13 @@ import {
   ChevronDown,
   Compass,
   Truck,
-  ImageIcon
+  ImageIcon,
+  Star,
+  HelpCircle,
+  Plus,
+  Minus
 } from 'lucide-react';
+import { FAQS } from './seo/site';
 import heroImage from './assets/hero-garage.webp';
 import cardResidential from './assets/card-residential.webp';
 import cardCommercial from './assets/card-commercial.webp';
@@ -40,6 +45,192 @@ import why9 from './assets/why-9.webp';
 import why10 from './assets/why-10.webp';
 
 const whyPhotos = [why1, why2, why3, why4, why5, why6, why7, why8, why9, why10];
+
+type ContactStatus = 'idle' | 'submitting' | 'success' | 'error';
+
+function ContactForm() {
+  const [name, setName] = React.useState('');
+  const [phone, setPhone] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [service, setService] = React.useState('');
+  const [message, setMessage] = React.useState('');
+  const [honey, setHoney] = React.useState('');
+  const [status, setStatus] = React.useState<ContactStatus>('idle');
+  const [errorMessage, setErrorMessage] = React.useState('');
+
+  const submitting = status === 'submitting';
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (submitting) return;
+
+    setStatus('submitting');
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone, email, service, message, honey }),
+      });
+
+      const data = (await response.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || 'Unable to send message right now.');
+      }
+
+      setStatus('success');
+      setName('');
+      setPhone('');
+      setEmail('');
+      setService('');
+      setMessage('');
+    } catch (error: unknown) {
+      setStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'Unable to send message right now.');
+    }
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="bg-zinc-900/30 border border-zinc-800 rounded-3xl p-8 lg:p-10 space-y-6"
+      noValidate
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Name <span className="text-red-500">*</span></label>
+          <input
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="John Doe"
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600 transition-colors"
+          />
+        </div>
+        <div className="space-y-2">
+          <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Phone <span className="text-red-500">*</span></label>
+          <input
+            type="tel"
+            required
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="(940) 555-0123"
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600 transition-colors"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Email <span className="text-red-500">*</span></label>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="john@example.com"
+          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600 transition-colors"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Service Needed</label>
+        <div className="relative">
+          <select
+            value={service}
+            onChange={(e) => setService(e.target.value)}
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-zinc-600 transition-colors"
+          >
+            <option value="">Select a service...</option>
+            <option value="residential">Residential Doors</option>
+            <option value="commercial">Commercial Doors</option>
+            <option value="repair">Repairs & Maintenance</option>
+            <option value="other">Other</option>
+          </select>
+          <ChevronDown className="w-4 h-4 text-zinc-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Message <span className="text-red-500">*</span></label>
+        <textarea
+          rows={4}
+          required
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Tell us about your project..."
+          className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600 transition-colors resize-none"
+        />
+      </div>
+
+      <input
+        type="text"
+        value={honey}
+        onChange={(e) => setHoney(e.target.value)}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="hidden"
+      />
+
+      <button
+        type="submit"
+        disabled={submitting}
+        className="w-full flex items-center justify-center gap-2 bg-white text-zinc-950 px-8 py-4 rounded-xl font-semibold text-sm tracking-wide hover:bg-zinc-200 transition-colors mt-4 disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        {submitting ? 'SENDING…' : 'SEND MESSAGE'} {!submitting && <Send className="w-4 h-4" />}
+      </button>
+
+      {status === 'success' && (
+        <p className="text-sm text-emerald-400 font-medium">
+          Thanks — your message is on its way. We'll be in touch shortly.
+        </p>
+      )}
+      {status === 'error' && (
+        <p className="text-sm text-red-400 font-medium">
+          {errorMessage || 'Something went wrong. Please try again or call (940) 781-1186.'}
+        </p>
+      )}
+    </form>
+  );
+}
+
+interface FAQItemProps {
+  q: string;
+  a: string;
+  defaultOpen?: boolean;
+}
+
+function FAQItem(props: FAQItemProps) {
+  const { q, a, defaultOpen } = props;
+  const [open, setOpen] = React.useState(!!defaultOpen);
+  return (
+    <div className="border border-zinc-800 rounded-2xl bg-zinc-900/40 transition-colors hover:border-zinc-700">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+        className="w-full flex items-center justify-between gap-6 text-left px-6 md:px-7 py-5 md:py-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded-2xl"
+      >
+        <span className="text-base md:text-lg font-semibold text-white pr-2">{q}</span>
+        <span className="shrink-0 w-9 h-9 rounded-full border border-zinc-700 bg-zinc-900 flex items-center justify-center text-zinc-300">
+          {open ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+        </span>
+      </button>
+      {/* Answer is rendered into the DOM unconditionally so search/AI crawlers
+          and the FAQPage JSON-LD see the same text — only visibility toggles. */}
+      <div
+        className={`px-6 md:px-7 overflow-hidden transition-[max-height,padding] duration-300 ease-out ${
+          open ? 'max-h-96 pb-6 md:pb-7' : 'max-h-0 pb-0'
+        }`}
+      >
+        <p className="text-zinc-400 leading-relaxed font-light">{a}</p>
+      </div>
+    </div>
+  );
+}
 
 function WhyPhotoRotator() {
   const [index, setIndex] = React.useState(0);
@@ -108,7 +299,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
             className="mt-6 md:mt-8 text-lg md:text-xl text-zinc-300 max-w-2xl font-light"
           >
-            Residential & Commercial Solutions Across West & North Texas. Family-owned, fully insured, and dedicated to high-end craftsmanship.
+            4B Overhead Doors installs and repairs residential and commercial garage doors across West and North Texas. Family-owned, fully insured, and trusted by homeowners, builders, and TxDOT.
           </motion.p>
 
           <motion.div
@@ -130,7 +321,7 @@ export default function Home() {
       {/* Expertise Section */}
       <section id="services" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="mb-16">
-          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Services</h3>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Services</p>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-none">
             Comprehensive <br />
             <span className="text-zinc-500">Door Solutions</span>
@@ -139,10 +330,10 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
-            { icon: <HomeIcon className="w-5 h-5" />, title: 'Residential Garage Doors', desc: "Enhance your home's curb appeal with premium, high-quality residential doors designed for durability and style.", img: cardResidential },
-            { icon: <Building2 className="w-5 h-5" />, title: 'Commercial Garage Doors', desc: 'Heavy-duty, reliable commercial doors built to withstand the toughest industrial environments.', img: cardCommercial },
-            { icon: <Wrench className="w-5 h-5" />, title: 'Repairs & Maintenance', desc: 'Fast, reliable repair services to keep your doors operating smoothly and safely year-round.', img: cardRepairs },
-            { icon: <ArrowRight className="w-5 h-5" />, title: 'Installations', desc: 'Professional installation by fully insured experts, ensuring perfect fit and function from day one.', img: cardInstallations }
+            { icon: <HomeIcon className="w-5 h-5" />, title: 'Residential Garage Doors', desc: "Enhance your home's curb appeal with premium, high-quality residential doors designed for durability and style.", img: cardResidential, imgAlt: 'Premium residential garage door on a Texas home installed by 4B Overhead Doors' },
+            { icon: <Building2 className="w-5 h-5" />, title: 'Commercial Garage Doors', desc: 'Heavy-duty, reliable commercial doors built to withstand the toughest industrial environments — including TxDOT highway department projects.', img: cardCommercial, imgAlt: 'Heavy-duty commercial overhead door on an industrial building, installed for a TxDOT-style project' },
+            { icon: <Wrench className="w-5 h-5" />, title: 'Repairs & Maintenance', desc: 'Fast, reliable repair services to keep your doors operating smoothly and safely year-round.', img: cardRepairs, imgAlt: 'Garage door technician performing spring and cable repair' },
+            { icon: <ArrowRight className="w-5 h-5" />, title: 'Installations', desc: 'Professional installation by fully insured experts, ensuring perfect fit and function from day one.', img: cardInstallations, imgAlt: 'New garage door installation in progress on a North Texas property' }
           ].map((item, i) => (
             <a
               key={i}
@@ -152,7 +343,7 @@ export default function Home() {
               <div className="absolute inset-0">
                 <img
                   src={item.img}
-                  alt={item.title}
+                  alt={item.imgAlt}
                   width={1024}
                   height={1024}
                   loading="lazy"
@@ -189,7 +380,7 @@ export default function Home() {
           </div>
 
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Why Us</h3>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Why Us</p>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.1] mb-6">
               Why Choose <br />
               4B Overhead <span className="text-zinc-500">Doors?</span>
@@ -222,7 +413,7 @@ export default function Home() {
       <section className="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
           <div className="max-w-2xl">
-            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Our Process</h3>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Our Process</p>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.05] mb-6">
               From the ground up, <br />
               <span className="text-zinc-500">built right.</span>
@@ -264,9 +455,107 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Reviews Section */}
+      <section id="reviews" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 bg-[#0c0c0c] border-y border-zinc-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Reviews</p>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.05] mb-6">
+              What Our <span className="text-zinc-500">Customers</span> <br />
+              Are Saying
+            </h2>
+            <p className="text-zinc-400 max-w-2xl mx-auto font-light">
+              Real recommendations from real Texans on Facebook.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                name: 'Nancy Shahan',
+                date: 'November 17, 2025',
+                quote: "If you need your overhead doors repaired or replaced this is the man to call, Colten Beaty! He definitely knows what he's doing. Very courteous and efficient. Thanks again Colten! Both doors are working great."
+              },
+              {
+                name: 'Amy Hageman Henderson',
+                date: 'November 16, 2025',
+                quote: "Colten came to the rescue last minute on a Saturday to fix a garage door that the cable had locked up on. He was very professional, affordable and communicated clearly. He also suggested we tighten the tension so the door didn't open and close so fast. 10/10 recommend!"
+              },
+              {
+                name: 'Jonathan Birkenfeld',
+                date: 'November 16, 2025',
+                quote: "Colten did great work installing the doors! Very professional and communicated very well through the process of the project. Would definitely recommend him to anyone in the market for a door."
+              }
+            ].map((review, i) => (
+              <div
+                key={i}
+                className="relative bg-zinc-900/50 border border-zinc-800 rounded-2xl p-7 md:p-8 flex flex-col transition-colors hover:border-zinc-700"
+              >
+                <div className="flex items-center gap-1 mb-5" aria-label="5 out of 5 stars">
+                  {Array.from({ length: 5 }).map((_, idx) => (
+                    <Star key={idx} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                  ))}
+                </div>
+                <p className="text-zinc-300 text-sm md:text-base leading-relaxed font-light mb-6">
+                  {review.quote}
+                </p>
+                <div className="mt-auto pt-5 border-t border-zinc-800 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full border border-zinc-700 bg-zinc-900 text-zinc-200 flex items-center justify-center font-semibold text-sm shrink-0">
+                    {review.name.split(' ').map((n) => n[0]).slice(0, 2).join('')}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-semibold text-white text-sm truncate">{review.name}</div>
+                    <div className="text-xs text-zinc-500 mt-0.5">Facebook</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <a
+              href="https://www.facebook.com/4BGarageDoors/reviews"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-300 hover:text-white underline decoration-zinc-700 hover:decoration-white underline-offset-4 transition-colors"
+            >
+              See more reviews on Facebook <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section — content mirrored in src/seo/site.ts FAQS for FAQPage JSON-LD */}
+      <section id="faq" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+          <div className="lg:sticky lg:top-32 lg:self-start">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">FAQ</p>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.05] mb-6">
+              Common <br />
+              <span className="text-zinc-500">questions.</span>
+            </h2>
+            <p className="text-zinc-400 font-light leading-relaxed mb-8">
+              Quick, honest answers about service areas, pricing, repair turnaround, and what makes 4B Overhead Doors different.
+            </p>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-white underline decoration-zinc-700 hover:decoration-white underline-offset-4 transition-colors"
+            >
+              <HelpCircle className="w-4 h-4" /> Don't see your question? Ask us.
+            </a>
+          </div>
+
+          <div className="lg:col-span-2 space-y-3">
+            {FAQS.map((item, i) => (
+              <FAQItem key={item.q} q={item.q} a={item.a} defaultOpen={i === 0} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Coverage Section */}
       <section id="service-areas" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto text-center">
-        <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Service Areas</h3>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Service Areas</p>
         <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-none mb-6">
           Based in West & <br />
           North <span className="text-zinc-500">Texas</span>
@@ -291,7 +580,7 @@ export default function Home() {
             </div>
             <div>
               <div className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-1">Beyond Texas</div>
-              <div className="text-zinc-200 font-medium leading-snug">Surrounding states — Oklahoma, New Mexico & nearby regions</div>
+              <div className="text-zinc-200 font-medium leading-snug">Surrounding states — Oklahoma & nearby regions</div>
             </div>
           </a>
           <a href="tel:9407811186" className="flex items-center gap-5 bg-zinc-900/50 border border-zinc-800 border-dashed p-6 rounded-2xl text-left hover:bg-zinc-900 hover:border-zinc-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70">
@@ -329,7 +618,7 @@ export default function Home() {
       {/* Contact Section */}
       <section id="contact" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 border-t border-zinc-900">
         <div>
-          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Get In Touch</h3>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Get In Touch</p>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-none mb-6">
             Let's Build <br />
             Something <span className="text-zinc-500">Great</span>
@@ -359,6 +648,16 @@ export default function Home() {
               </div>
             </a>
 
+            <a href="mailto:4boverheaddoorsllc@gmail.com" className="flex items-center gap-6 group focus-visible:outline-none">
+              <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-400 shrink-0 group-hover:text-white group-hover:bg-zinc-800 transition-colors">
+                <Mail className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-xs font-bold tracking-widest text-zinc-500 uppercase mb-1">Business Email</div>
+                <div className="text-lg font-medium text-white break-all group-hover:underline underline-offset-4 decoration-zinc-600">4boverheaddoorsllc@gmail.com</div>
+              </div>
+            </a>
+
             <div className="flex items-center gap-6">
               <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-400 shrink-0">
                 <MapPin className="w-5 h-5" />
@@ -371,46 +670,7 @@ export default function Home() {
           </div>
         </div>
 
-        <form className="bg-zinc-900/30 border border-zinc-800 rounded-3xl p-8 lg:p-10 space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Name <span className="text-red-500">*</span></label>
-              <input type="text" placeholder="John Doe" className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600 transition-colors" />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Phone <span className="text-red-500">*</span></label>
-              <input type="tel" placeholder="(940) 555-0123" className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600 transition-colors" />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Email <span className="text-red-500">*</span></label>
-            <input type="email" placeholder="john@example.com" className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600 transition-colors" />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Service Needed</label>
-            <div className="relative">
-              <select className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-zinc-600 transition-colors">
-                <option value="">Select a service...</option>
-                <option value="residential">Residential Doors</option>
-                <option value="commercial">Commercial Doors</option>
-                <option value="repair">Repairs & Maintenance</option>
-                <option value="other">Other</option>
-              </select>
-              <ChevronDown className="w-4 h-4 text-zinc-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Message <span className="text-red-500">*</span></label>
-            <textarea rows={4} placeholder="Tell us about your project..." className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-zinc-600 transition-colors resize-none"></textarea>
-          </div>
-
-          <button type="submit" className="w-full flex items-center justify-center gap-2 bg-white text-zinc-950 px-8 py-4 rounded-xl font-semibold text-sm tracking-wide hover:bg-zinc-200 transition-colors mt-4">
-            SEND MESSAGE <Send className="w-4 h-4" />
-          </button>
-        </form>
+        <ContactForm />
       </section>
     </>
   );
