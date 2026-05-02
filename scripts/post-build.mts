@@ -45,6 +45,8 @@ interface AssetIndex {
   heroMobile?: string;
   /** Latin variable Inter woff2 hashed URL — first byte the page actually needs. */
   fontLatin?: string;
+  /** Compiled CSS contents to inline into <head> (removes the render-blocking link). */
+  inlineCss?: { href: string; source: string };
 }
 
 /**
@@ -64,10 +66,20 @@ async function buildAssetIndex(distRoot: string): Promise<AssetIndex> {
     // The latin variable-axis Inter weight file is what English text needs.
     // @fontsource-variable/inter emits inter-latin-wght-normal-XXXX.woff2.
     const fontLatin = files.find(f => /^inter-latin-wght-normal-[\w-]+\.woff2$/.test(f));
+
+    // Find the compiled CSS file and read it for inlining into <head>.
+    const cssFile = files.find(f => /^index-[\w-]+\.css$/.test(f));
+    let inlineCss: AssetIndex['inlineCss'];
+    if (cssFile) {
+      const source = await readFile(join(distRoot, 'assets', cssFile), 'utf8');
+      inlineCss = { href: `/assets/${cssFile}`, source };
+    }
+
     return {
       hero: hero ? `/assets/${hero}` : undefined,
       heroMobile: heroMobile ? `/assets/${heroMobile}` : undefined,
-      fontLatin: fontLatin ? `/assets/${fontLatin}` : undefined
+      fontLatin: fontLatin ? `/assets/${fontLatin}` : undefined,
+      inlineCss
     };
   } catch {
     return {};
@@ -133,16 +145,31 @@ function escapeAttr(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function injectInto(template: string, head: string): string {
+function injectInto(template: string, head: string, inlineCss?: AssetIndex['inlineCss']): string {
   // Strip existing <title>, description, og:*, twitter:* (the placeholders in
   // public/index.html). Then insert our authoritative block right before </head>.
-  const stripped = template
+  let stripped = template
     .replace(/<title>[^<]*<\/title>/i, '')
     .replace(/<meta\s+name=["']description["'][^>]*>\s*/gi, '')
     .replace(/<meta\s+property=["']og:[^"']+["'][^>]*>\s*/gi, '')
     .replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*>\s*/gi, '')
     .replace(/<link\s+rel=["']canonical["'][^>]*>\s*/gi, '')
     .replace(/<script\s+type=["']application\/ld\+json["'][^<]*<\/script>\s*/gi, '');
+
+  if (inlineCss) {
+    // Replace the render-blocking <link rel="stylesheet" href="/assets/index-*.css">
+    // with an inline <style>. Saves the round-trip Lighthouse flagged under
+    // "Render blocking requests". The CSS is small enough (~9 KiB gzipped) that
+    // duplicating it across 23 routes is cheaper than the per-page RTT.
+    const linkPattern = new RegExp(
+      `<link\\s+rel=["']stylesheet["'][^>]*href=["']${inlineCss.href.replace(/[/.]/g, '\\$&')}["'][^>]*>\\s*`,
+      'i'
+    );
+    stripped = stripped.replace(
+      linkPattern,
+      `<style data-vite-inlined-css>${inlineCss.source}</style>`
+    );
+  }
 
   return stripped.replace(/<\/head>/i, `    ${head}\n  </head>`);
 }
@@ -169,7 +196,7 @@ async function processRoute(
     { assets, isHome: routeKey === 'home' }
   );
 
-  const html = injectInto(indexTemplate, head);
+  const html = injectInto(indexTemplate, head, assets.inlineCss);
 
   const outPath =
     route.path === '/'
@@ -199,7 +226,7 @@ async function processCity(
     { assets, isHome: false }
   );
 
-  const html = injectInto(indexTemplate, head);
+  const html = injectInto(indexTemplate, head, assets.inlineCss);
   const outPath = join(DIST, 'service-areas', city.slug, 'index.html');
   await mkdir(dirname(outPath), { recursive: true });
   await writeFile(outPath, html, 'utf8');

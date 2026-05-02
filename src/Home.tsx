@@ -340,8 +340,8 @@ function WhyPhotoRotator() {
       <img
         src={slot0Src}
         alt="4B Overhead Doors craftsmanship"
-        width={900}
-        height={1200}
+        width={750}
+        height={1000}
         loading="eager"
         decoding="async"
         fetchPriority={activeSlot === 0 ? 'high' : 'low'}
@@ -353,8 +353,8 @@ function WhyPhotoRotator() {
         src={slot1Src}
         alt=""
         aria-hidden="true"
-        width={900}
-        height={1200}
+        width={750}
+        height={1000}
         loading="lazy"
         decoding="async"
         fetchPriority={activeSlot === 1 ? 'high' : 'low'}
