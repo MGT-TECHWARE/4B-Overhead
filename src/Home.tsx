@@ -339,8 +339,8 @@ function WhyPhotoRotator() {
       <img
         src={slot0Src}
         alt="4B Overhead Doors craftsmanship"
-        width={1200}
-        height={1600}
+        width={900}
+        height={1200}
         loading="eager"
         decoding="async"
         fetchPriority={activeSlot === 0 ? 'high' : 'low'}
@@ -352,8 +352,8 @@ function WhyPhotoRotator() {
         src={slot1Src}
         alt=""
         aria-hidden="true"
-        width={1200}
-        height={1600}
+        width={900}
+        height={1200}
         loading="lazy"
         decoding="async"
         fetchPriority={activeSlot === 1 ? 'high' : 'low'}
@@ -376,8 +376,8 @@ export default function Home() {
           <img
             src={heroImage}
             alt="Modern luxury home with premium garage doors"
-            width={1600}
-            height={1600}
+            width={1707}
+            height={1280}
             fetchPriority="high"
             decoding="async"
             className="w-full h-full object-cover"
@@ -426,10 +426,10 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
-            { icon: <HomeIcon className="w-5 h-5" />, title: 'Residential Garage Doors', desc: "Enhance your home's curb appeal with premium, high-quality residential doors designed for durability and style.", img: cardResidential, imgAlt: 'Premium residential garage door on a Texas home installed by 4B Overhead Doors' },
-            { icon: <Building2 className="w-5 h-5" />, title: 'Commercial Garage Doors', desc: 'Heavy-duty, reliable commercial doors built to withstand the toughest industrial environments — including TxDOT highway department projects.', img: cardCommercial, imgAlt: 'Heavy-duty commercial overhead door on an industrial building, installed for a TxDOT-style project' },
-            { icon: <Wrench className="w-5 h-5" />, title: 'Repairs & Maintenance', desc: 'Fast, reliable repair services to keep your doors operating smoothly and safely year-round.', img: cardRepairs, imgAlt: 'Garage door technician performing spring and cable repair' },
-            { icon: <ArrowRight className="w-5 h-5" />, title: 'Installations', desc: 'Professional installation by fully insured experts, ensuring perfect fit and function from day one.', img: cardInstallations, imgAlt: 'New garage door installation in progress on a North Texas property' }
+            { icon: <HomeIcon className="w-5 h-5" />, title: 'Residential Garage Doors', desc: "Enhance your home's curb appeal with premium, high-quality residential doors designed for durability and style.", img: cardResidential, imgW: 940, imgH: 720, imgAlt: 'Premium residential garage door on a Texas home installed by 4B Overhead Doors' },
+            { icon: <Building2 className="w-5 h-5" />, title: 'Commercial Garage Doors', desc: 'Heavy-duty, reliable commercial doors built to withstand the toughest industrial environments — including TxDOT highway department projects.', img: cardCommercial, imgW: 540, imgH: 720, imgAlt: 'Heavy-duty commercial overhead door on an industrial building, installed for a TxDOT-style project' },
+            { icon: <Wrench className="w-5 h-5" />, title: 'Repairs & Maintenance', desc: 'Fast, reliable repair services to keep your doors operating smoothly and safely year-round.', img: cardRepairs, imgW: 720, imgH: 720, imgAlt: 'Garage door technician performing spring and cable repair' },
+            { icon: <ArrowRight className="w-5 h-5" />, title: 'Installations', desc: 'Professional installation by fully insured experts, ensuring perfect fit and function from day one.', img: cardInstallations, imgW: 720, imgH: 720, imgAlt: 'New garage door installation in progress on a North Texas property' }
           ].map((item, i) => (
             <a
               key={i}
@@ -440,8 +440,8 @@ export default function Home() {
                 <img
                   src={item.img}
                   alt={item.imgAlt}
-                  width={1024}
-                  height={1024}
+                  width={item.imgW}
+                  height={item.imgH}
                   loading="lazy"
                   decoding="async"
                   className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700"
@@ -540,7 +540,7 @@ export default function Home() {
                 key={i}
                 className="group relative rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 aspect-[4/5] hover:border-zinc-600 transition-colors"
               >
-                <img src={step.src} alt={step.alt} width={1200} height={1500} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={step.src} alt={step.alt} width={900} height={675} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/10 to-transparent pointer-events-none" />
                 <div className="absolute top-3 left-3 md:top-4 md:left-4 px-2.5 py-1 rounded-md bg-zinc-950/70 backdrop-blur-sm border border-white/10 text-[10px] md:text-xs font-bold tracking-widest text-white">
                   {String(i + 1).padStart(2, '0')}
