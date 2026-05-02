@@ -20,23 +20,10 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Performance: preconnect to font origins so the @font-face CSS request
-         starts before the parser blocks. font-display:swap on the stylesheet
-         prevents FOIT. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      />
-    </noscript>
+    <!-- Inter is bundled by Vite via @fontsource-variable/inter (imported
+         in src/index.css). No third-party font request, no render-blocking
+         external CSS — kills the Google Fonts dependency. -->
+
   </head>
   <body>
     <div id="root"></div>

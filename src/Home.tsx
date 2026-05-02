@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import {
   Home as HomeIcon,
@@ -313,31 +312,55 @@ function FAQSection() {
 }
 
 function WhyPhotoRotator() {
+  // Only mount the active and next slot. Each <img> swaps its src as the
+  // index advances, so the browser fetches one new image per cycle instead
+  // of preloading all 10 (which was costing ~3 MB even when the user only
+  // saw one at a time).
   const [index, setIndex] = React.useState(0);
+  const [activeSlot, setActiveSlot] = React.useState<0 | 1>(0);
 
   React.useEffect(() => {
     const id = window.setInterval(() => {
-      setIndex((i) => (i + 1) % whyPhotos.length);
+      setIndex(i => (i + 1) % whyPhotos.length);
+      setActiveSlot(s => (s === 0 ? 1 : 0));
     }, 4000);
     return () => window.clearInterval(id);
   }, []);
 
+  // Slot 0 holds the photo for even cycles, slot 1 for odd. Source for the
+  // currently-inactive slot is set to the *next* photo so it's already
+  // fetched/decoded by the time we crossfade to it.
+  const nextIndex = (index + 1) % whyPhotos.length;
+  const slot0Src = activeSlot === 0 ? whyPhotos[index] : whyPhotos[nextIndex];
+  const slot1Src = activeSlot === 1 ? whyPhotos[index] : whyPhotos[nextIndex];
+
   return (
     <>
-      {whyPhotos.map((src, i) => (
-        <img
-          key={src}
-          src={src}
-          alt="4B Overhead Doors craftsmanship"
-          width={1200}
-          height={1600}
-          loading={i === 0 ? 'eager' : 'lazy'}
-          decoding="async"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-            i === index ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
-      ))}
+      <img
+        src={slot0Src}
+        alt="4B Overhead Doors craftsmanship"
+        width={1200}
+        height={1600}
+        loading="eager"
+        decoding="async"
+        fetchPriority={activeSlot === 0 ? 'high' : 'low'}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+          activeSlot === 0 ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
+      <img
+        src={slot1Src}
+        alt=""
+        aria-hidden="true"
+        width={1200}
+        height={1600}
+        loading="lazy"
+        decoding="async"
+        fetchPriority={activeSlot === 1 ? 'high' : 'low'}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+          activeSlot === 1 ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
     </>
   );
 }
@@ -362,31 +385,24 @@ export default function Home() {
         </div>
 
         <div className="relative z-20 max-w-4xl mx-auto flex flex-col items-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1] md:leading-[0.92] text-white"
+          <h1
+            className="hero-fade-up text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1] md:leading-[0.92] text-white"
           >
             <span className="block">Premium Garage</span>
             <span className="block">Doors.</span>
             <span className="block text-zinc-300">Built to last</span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-            className="mt-6 md:mt-8 text-lg md:text-xl text-zinc-300 max-w-2xl font-light"
+          <p
+            className="hero-fade-up mt-6 md:mt-8 text-lg md:text-xl text-zinc-300 max-w-2xl font-light"
+            style={{ animationDelay: '0.2s' }}
           >
             4B Overhead Doors installs and repairs residential and commercial garage doors across West and North Texas. Family-owned, fully insured, and trusted by homeowners, builders, and TxDOT.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
-            className="mt-10 flex flex-col sm:flex-row items-center gap-4"
+          <div
+            className="hero-fade-up mt-10 flex flex-col sm:flex-row items-center gap-4"
+            style={{ animationDelay: '0.4s' }}
           >
             <a href="#contact" className="w-full sm:w-auto sm:min-w-[220px] flex items-center justify-center gap-2 border border-white bg-white text-zinc-950 px-8 py-4 rounded-md font-semibold text-sm tracking-wide hover:bg-zinc-200 transition-colors">
               GET A FREE QUOTE <ArrowRight className="w-4 h-4" />
@@ -394,7 +410,7 @@ export default function Home() {
             <a href="tel:9407811186" className="w-full sm:w-auto sm:min-w-[220px] flex items-center justify-center gap-2 bg-black/30 border border-white/40 text-white px-8 py-4 rounded-md font-semibold text-sm tracking-wide hover:bg-white/10 hover:border-white transition-colors">
               <Phone className="w-4 h-4" /> CALL NOW
             </a>
-          </motion.div>
+          </div>
         </div>
       </section>
 

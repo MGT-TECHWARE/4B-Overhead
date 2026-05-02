@@ -40,7 +40,23 @@ export default function Layout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    // rAF-throttle: at most one read+setState per frame, no matter how fast
+    // the scroll wheel ticks. Eliminates the forced-reflow warning Lighthouse
+    // attributes to the bare `window.scrollY` read on every scroll event.
+    let ticking = false;
+    let lastScrolled = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const next = window.scrollY > 20;
+        if (next !== lastScrolled) {
+          lastScrolled = next;
+          setScrolled(next);
+        }
+        ticking = false;
+      });
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);

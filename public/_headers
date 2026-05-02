@@ -1,0 +1,27 @@
+# Cloudflare Pages headers config.
+# Reference: https://developers.cloudflare.com/pages/configuration/headers/
+
+# Vite emits content-hashed filenames under /assets/ (e.g. index-D_hYBCsX.js).
+# These are immutable: a content change produces a new filename, so the old
+# URL never needs to be revalidated. Tell browsers + intermediaries to cache
+# them for a year.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Same story for any bundled font woff2.
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+
+# Crawler-facing files: refresh daily.
+/sitemap.xml
+  Cache-Control: public, max-age=86400
+/robots.txt
+  Cache-Control: public, max-age=86400
+/llms.txt
+  Cache-Control: public, max-age=86400
+
+# HTML: do not cache long. Each deploy rewrites these with new asset hashes,
+# so we want browsers to re-check on navigation. Cloudflare's edge still
+# caches HTML by default unless a deploy invalidates it.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate

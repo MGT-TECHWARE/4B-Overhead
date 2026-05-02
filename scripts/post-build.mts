@@ -38,13 +38,33 @@ interface RouteHeadInputs {
   jsonLd: string;
 }
 
-function buildHead(inputs: RouteHeadInputs): string {
+/**
+ * Discover the hashed hero-garage asset filename Vite produced this build,
+ * so we can preload it from <head> as the LCP image. Falls back to no
+ * preload if the asset isn't found (e.g. someone renamed the import).
+ */
+async function findHashedHeroUrl(distRoot: string): Promise<string | null> {
+  const { readdir } = await import('node:fs/promises');
+  try {
+    const files = await readdir(join(distRoot, 'assets'));
+    const match = files.find(f => /^hero-garage-[\w-]+\.webp$/.test(f));
+    return match ? `/assets/${match}` : null;
+  } catch {
+    return null;
+  }
+}
+
+function buildHead(inputs: RouteHeadInputs, opts?: { heroPreload?: string | null; isHome?: boolean }): string {
   const { title, description, canonical, ogUrl, jsonLd } = inputs;
+  const preloadTag =
+    opts?.isHome && opts?.heroPreload
+      ? `<link rel="preload" as="image" href="${opts.heroPreload}" type="image/webp" fetchpriority="high" />\n    `
+      : '';
   // Note: the existing index.html ships with placeholder <title> / og: tags.
   // We REPLACE those rather than append, to avoid duplicate-tag confusion in
   // SERPs and validators. The canonical and JSON-LD are appended (they don't
   // exist in the source).
-  return `<title>${title}</title>
+  return `${preloadTag}<title>${title}</title>
     <meta name="description" content="${escapeAttr(description)}" />
     <link rel="canonical" href="${canonical}" />
 
@@ -89,16 +109,23 @@ function fullUrl(path: string): string {
   return path === '/' ? SITE_URL : `${SITE_URL}${path}`;
 }
 
-async function processRoute(routeKey: RouteKey, indexTemplate: string): Promise<string> {
+async function processRoute(
+  routeKey: RouteKey,
+  indexTemplate: string,
+  heroPreload: string | null
+): Promise<string> {
   const route = ROUTES[routeKey];
   const canonical = fullUrl(route.path);
-  const head = buildHead({
-    title: route.title,
-    description: route.description,
-    canonical,
-    ogUrl: canonical,
-    jsonLd: jsonLdString(routeKey)
-  });
+  const head = buildHead(
+    {
+      title: route.title,
+      description: route.description,
+      canonical,
+      ogUrl: canonical,
+      jsonLd: jsonLdString(routeKey)
+    },
+    { heroPreload, isHome: routeKey === 'home' }
+  );
 
   const html = injectInto(indexTemplate, head);
 
@@ -221,9 +248,11 @@ async function main(): Promise<void> {
   const indexTemplatePath = join(DIST, 'index.html');
   const indexTemplate = await readFile(indexTemplatePath, 'utf8');
 
+  const heroPreload = await findHashedHeroUrl(DIST);
+
   const written: string[] = [];
   for (const key of Object.keys(ROUTES) as RouteKey[]) {
-    written.push(await processRoute(key, indexTemplate));
+    written.push(await processRoute(key, indexTemplate, heroPreload));
   }
   for (const city of CITIES) {
     written.push(await processCity(city, indexTemplate));
