@@ -142,9 +142,10 @@ function ContactForm() {
       </div>
 
       <div className="space-y-2">
-        <label className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Service Needed</label>
+        <label htmlFor="contact-service" className="text-xs font-bold tracking-widest text-zinc-400 uppercase">Service Needed</label>
         <div className="relative">
           <select
+            id="contact-service"
             value={service}
             onChange={(e) => setService(e.target.value)}
             className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 text-white appearance-none focus:outline-none focus:border-zinc-600 transition-colors"
@@ -543,7 +544,7 @@ export default function Home() {
                 key={i}
                 className="group relative rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800 aspect-[4/5] hover:border-zinc-600 transition-colors"
               >
-                <img src={step.src} alt={step.alt} width={900} height={675} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={step.src} alt={step.alt} width={540} height={405} loading="lazy" decoding="async" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/85 via-zinc-950/10 to-transparent pointer-events-none" />
                 <div className="absolute top-3 left-3 md:top-4 md:left-4 px-2.5 py-1 rounded-md bg-zinc-950/70 backdrop-blur-sm border border-white/10 text-[10px] md:text-xs font-bold tracking-widest text-white">
                   {String(i + 1).padStart(2, '0')}
@@ -590,7 +591,7 @@ export default function Home() {
                 key={i}
                 className="relative bg-zinc-900/50 border border-zinc-800 rounded-2xl p-7 md:p-8 flex flex-col transition-colors hover:border-zinc-700"
               >
-                <div className="flex items-center gap-1 mb-5" aria-label="5 out of 5 stars">
+                <div className="flex items-center gap-1 mb-5" role="img" aria-label="5 out of 5 stars">
                   {Array.from({ length: 5 }).map((_, idx) => (
                     <Star key={idx} className="w-4 h-4 text-amber-400 fill-amber-400" />
                   ))}

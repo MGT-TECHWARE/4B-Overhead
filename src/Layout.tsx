@@ -130,8 +130,10 @@ export default function Layout() {
           <img
             src={logoUrl}
             alt="4B Overhead Doors, LLC"
-            width={800}
-            height={437}
+            width={400}
+            height={218}
+            fetchPriority="high"
+            decoding="async"
             className="h-20 md:h-24 w-auto object-contain drop-shadow-[0_4px_18px_rgba(0,0,0,0.65)]"
           />
         </Link>
@@ -247,8 +249,8 @@ export default function Layout() {
               <img
                 src={logoUrl}
                 alt="4B Overhead Doors, LLC"
-                width={800}
-                height={436}
+                width={400}
+                height={218}
                 loading="lazy"
                 decoding="async"
                 className="h-24 md:h-28 w-auto object-contain"

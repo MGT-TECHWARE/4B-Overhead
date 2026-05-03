@@ -31,9 +31,14 @@ const RULES = [
   // ratio while still looking sharp on retina screens at the displayed size.
   { match: /^card-/, maxW: 540, maxH: 540, quality: 74 },
   { match: /^hero-/, maxW: 1920, maxH: 1280, quality: 80 },
-  { match: /^process-/, maxW: 900, maxH: 1125, quality: 78 },
+  // Process cards display at ~461×346 desktop (DPR=1) / ~276×368 for the
+  // tall variant. 540 wide covers 2× DPR cleanly.
+  { match: /^process-/, maxW: 540, maxH: 720, quality: 74 },
   // Why-rotator displays at ~364×485. 600 wide ≈ 1.65× DPR.
   { match: /^why-/, maxW: 600, maxH: 800, quality: 74 },
+  // Logo displays at h-20/h-24 (≤96px tall = ~176×96). 400 wide covers 2×
+  // DPR for both header and footer placements.
+  { match: /^4b-logo/, maxW: 400, maxH: 220, quality: 80 },
   // Gallery: cap to 1280 long-edge so single-image lightbox still looks good
   // on desktop, but tiles in the masonry won't blow past 4× display size.
   { match: /^image|copy|^Screenshot/i, maxW: 1280, maxH: 1280, quality: 76 }
