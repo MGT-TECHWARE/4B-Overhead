@@ -156,7 +156,7 @@ function ContactForm() {
             <option value="repair">Repairs & Maintenance</option>
             <option value="other">Other</option>
           </select>
-          <ChevronDown className="w-4 h-4 text-zinc-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <ChevronDown className="w-4 h-4 text-zinc-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
         </div>
       </div>
 
@@ -274,7 +274,7 @@ function FAQSection() {
     >
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-14 md:mb-20">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">FAQ</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 mb-4">FAQ</p>
           <h2
             id="faq-heading"
             className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.05] mb-5"
@@ -421,10 +421,10 @@ export default function Home() {
       {/* Expertise Section */}
       <section id="services" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="mb-16">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Services</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 mb-4">Services</p>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-none">
             Comprehensive <br />
-            <span className="text-zinc-500">Door Solutions</span>
+            <span className="text-zinc-400">Door Solutions</span>
           </h2>
         </div>
 
@@ -457,7 +457,7 @@ export default function Home() {
                 <div className="w-11 h-11 rounded-full border border-white/20 bg-black/40 backdrop-blur-sm flex items-center justify-center mb-5 text-white">
                   {item.icon}
                 </div>
-                <h4 className="text-xl md:text-2xl font-semibold mb-2 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">{item.title}</h4>
+                <h3 className="text-xl md:text-2xl font-semibold mb-2 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">{item.title}</h3>
                 <p className="text-zinc-300 text-sm font-light leading-relaxed max-w-md drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">{item.desc}</p>
               </div>
             </a>
@@ -480,10 +480,10 @@ export default function Home() {
           </div>
 
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Why Us</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 mb-4">Why Us</p>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.1] mb-6">
               Why Choose <br />
-              4B Overhead <span className="text-zinc-500">Doors?</span>
+              4B Overhead <span className="text-zinc-400">Doors?</span>
             </h2>
             <p className="text-zinc-400 text-lg mb-12 font-light leading-relaxed">
               We don't just install doors; we build lasting relationships through exceptional craftsmanship, unwavering reliability, and premium service.
@@ -500,8 +500,8 @@ export default function Home() {
                   <div className="w-10 h-10 rounded-full border border-zinc-700 flex items-center justify-center mb-5 text-zinc-300">
                     {React.cloneElement(feature.icon, { className: 'w-4 h-4' })}
                   </div>
-                  <h5 className="font-semibold text-lg mb-2 text-white">{feature.title}</h5>
-                  <p className="text-sm text-zinc-500 leading-relaxed font-light">{feature.desc}</p>
+                  <h3 className="font-semibold text-lg mb-2 text-white">{feature.title}</h3>
+                  <p className="text-sm text-zinc-400 leading-relaxed font-light">{feature.desc}</p>
                 </div>
               ))}
             </div>
@@ -513,10 +513,10 @@ export default function Home() {
       <section className="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
           <div className="max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Our Process</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 mb-4">Our Process</p>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.05] mb-6">
               From the ground up, <br />
-              <span className="text-zinc-500">built right.</span>
+              <span className="text-zinc-400">built right.</span>
             </h2>
             <p className="text-zinc-400 font-light leading-relaxed">
               Every project starts with a bare slab and ends with a door that opens for years. Here's a recent commercial build.
@@ -559,9 +559,9 @@ export default function Home() {
       <section id="reviews" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 bg-[#0c0c0c] border-y border-zinc-900">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Reviews</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 mb-4">Reviews</p>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.05] mb-6">
-              What Our <span className="text-zinc-500">Customers</span> <br />
+              What Our <span className="text-zinc-400">Customers</span> <br />
               Are Saying
             </h2>
             <p className="text-zinc-400 max-w-2xl mx-auto font-light">
@@ -605,7 +605,7 @@ export default function Home() {
                   </div>
                   <div className="min-w-0">
                     <div className="font-semibold text-white text-sm truncate">{review.name}</div>
-                    <div className="text-xs text-zinc-500 mt-0.5">Facebook</div>
+                    <div className="text-xs text-zinc-400 mt-0.5">Facebook</div>
                   </div>
                 </div>
               </div>
@@ -632,10 +632,10 @@ export default function Home() {
       {/* Coverage Section */}
       <section id="service-areas" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="text-center mb-14">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Service Areas</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 mb-4">Service Areas</p>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-none mb-6">
             Based in West & <br />
-            North <span className="text-zinc-500">Texas</span>
+            North <span className="text-zinc-400">Texas</span>
           </h2>
           <p className="text-zinc-400 max-w-2xl mx-auto font-light">
             We cover {FEATURED_CITIES.length}+ major cities across North and West Texas — and travel for the right project. Pick your city for a tailored page, or call (940) 781-1186.
@@ -649,7 +649,7 @@ export default function Home() {
               to={`/service-areas/${c.slug}`}
               className="group flex flex-col items-start justify-center gap-1 bg-zinc-900/50 border border-zinc-800 p-4 rounded-2xl hover:bg-zinc-900 hover:border-zinc-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
             >
-              <div className="flex items-center gap-2 text-zinc-500">
+              <div className="flex items-center gap-2 text-zinc-400">
                 <MapPin className="w-4 h-4" />
                 <span className="text-[10px] font-semibold tracking-widest uppercase">{c.region}</span>
               </div>
@@ -689,10 +689,10 @@ export default function Home() {
       {/* Contact Section */}
       <section id="contact" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 border-t border-zinc-900">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Get In Touch</p>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-400 mb-4">Get In Touch</p>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-none mb-6">
             Let's Build <br />
-            Something <span className="text-zinc-500">Great</span>
+            Something <span className="text-zinc-400">Great</span>
           </h2>
           <p className="text-zinc-400 mb-12 font-light">
             Whether you need a new installation, emergency repair, or routine maintenance, our team is ready to assist you.
@@ -704,7 +704,7 @@ export default function Home() {
                 <Phone className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-xs font-bold tracking-widest text-zinc-500 uppercase mb-1">Phone</div>
+                <div className="text-xs font-bold tracking-widest text-zinc-400 uppercase mb-1">Phone</div>
                 <div className="text-lg font-medium text-white group-hover:underline underline-offset-4 decoration-zinc-600">(940) 781-1186</div>
               </div>
             </a>
@@ -714,7 +714,7 @@ export default function Home() {
                 <Mail className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-xs font-bold tracking-widest text-zinc-500 uppercase mb-1">Email</div>
+                <div className="text-xs font-bold tracking-widest text-zinc-400 uppercase mb-1">Email</div>
                 <div className="text-lg font-medium text-white break-all group-hover:underline underline-offset-4 decoration-zinc-600">coltenbeaty182@gmail.com</div>
               </div>
             </a>
@@ -724,7 +724,7 @@ export default function Home() {
                 <Mail className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-xs font-bold tracking-widest text-zinc-500 uppercase mb-1">Business Email</div>
+                <div className="text-xs font-bold tracking-widest text-zinc-400 uppercase mb-1">Business Email</div>
                 <div className="text-lg font-medium text-white break-all group-hover:underline underline-offset-4 decoration-zinc-600">4boverheaddoorsllc@gmail.com</div>
               </div>
             </a>
@@ -734,7 +734,7 @@ export default function Home() {
                 <MapPin className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-xs font-bold tracking-widest text-zinc-500 uppercase mb-1">Service Area</div>
+                <div className="text-xs font-bold tracking-widest text-zinc-400 uppercase mb-1">Service Area</div>
                 <div className="text-lg font-medium text-white">West & North Texas</div>
               </div>
             </div>

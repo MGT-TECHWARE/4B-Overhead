@@ -256,36 +256,36 @@ export default function Layout() {
                 className="h-24 md:h-28 w-auto object-contain"
               />
             </Link>
-            <p className="text-zinc-500 font-light max-w-sm">
+            <p className="text-zinc-400 font-light max-w-sm">
               Premium residential and commercial garage door solutions serving West and North Texas. Family-owned and operated by <span className="text-zinc-300">Colten Beaty</span>, fully insured, and trusted on jobs from custom homes to TxDOT highway projects.
             </p>
           </div>
 
           <div>
-            <h4 className="text-xs font-bold tracking-widest text-white uppercase mb-6">Quick Links</h4>
+            <h2 className="text-xs font-bold tracking-widest text-white uppercase mb-6">Quick Links</h2>
             <ul className="space-y-4">
-              <li><a href="/#services" onClick={(e) => handleNavClick(e, '/#services')} className="text-zinc-500 hover:text-white transition-colors text-sm">Services</a></li>
-              <li><Link to="/work" className="text-zinc-500 hover:text-white transition-colors text-sm">Our Work</Link></li>
-              <li><a href="/#why-us" onClick={(e) => handleNavClick(e, '/#why-us')} className="text-zinc-500 hover:text-white transition-colors text-sm">Why Choose Us</a></li>
-              <li><a href="/#reviews" onClick={(e) => handleNavClick(e, '/#reviews')} className="text-zinc-500 hover:text-white transition-colors text-sm">Reviews</a></li>
-              <li><a href="/#faq" onClick={(e) => handleNavClick(e, '/#faq')} className="text-zinc-500 hover:text-white transition-colors text-sm">FAQ</a></li>
-              <li><Link to="/service-areas" className="text-zinc-500 hover:text-white transition-colors text-sm">Service Areas</Link></li>
-              <li><a href="/#contact" onClick={(e) => handleNavClick(e, '/#contact')} className="text-zinc-500 hover:text-white transition-colors text-sm">Contact</a></li>
+              <li><a href="/#services" onClick={(e) => handleNavClick(e, '/#services')} className="text-zinc-400 hover:text-white transition-colors text-sm">Services</a></li>
+              <li><Link to="/work" className="text-zinc-400 hover:text-white transition-colors text-sm">Our Work</Link></li>
+              <li><a href="/#why-us" onClick={(e) => handleNavClick(e, '/#why-us')} className="text-zinc-400 hover:text-white transition-colors text-sm">Why Choose Us</a></li>
+              <li><a href="/#reviews" onClick={(e) => handleNavClick(e, '/#reviews')} className="text-zinc-400 hover:text-white transition-colors text-sm">Reviews</a></li>
+              <li><a href="/#faq" onClick={(e) => handleNavClick(e, '/#faq')} className="text-zinc-400 hover:text-white transition-colors text-sm">FAQ</a></li>
+              <li><Link to="/service-areas" className="text-zinc-400 hover:text-white transition-colors text-sm">Service Areas</Link></li>
+              <li><a href="/#contact" onClick={(e) => handleNavClick(e, '/#contact')} className="text-zinc-400 hover:text-white transition-colors text-sm">Contact</a></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-xs font-bold tracking-widest text-white uppercase mb-6">Contact</h4>
+            <h2 className="text-xs font-bold tracking-widest text-white uppercase mb-6">Contact</h2>
             <ul className="space-y-4">
-              <li><a href="tel:9407811186" className="text-zinc-500 hover:text-white transition-colors text-sm inline-flex items-center gap-2"><Phone className="w-4 h-4 shrink-0" />(940) 781-1186</a></li>
-              <li><a href="mailto:coltenbeaty182@gmail.com" className="text-zinc-500 hover:text-white transition-colors text-sm break-all inline-flex items-center gap-2"><Mail className="w-4 h-4 shrink-0" />coltenbeaty182@gmail.com</a></li>
-              <li className="text-zinc-500 text-sm inline-flex items-center gap-2"><MapPin className="w-4 h-4 shrink-0" />West & North Texas</li>
+              <li><a href="tel:9407811186" className="text-zinc-400 hover:text-white transition-colors text-sm inline-flex items-center gap-2"><Phone className="w-4 h-4 shrink-0" />(940) 781-1186</a></li>
+              <li><a href="mailto:coltenbeaty182@gmail.com" className="text-zinc-400 hover:text-white transition-colors text-sm break-all inline-flex items-center gap-2"><Mail className="w-4 h-4 shrink-0" />coltenbeaty182@gmail.com</a></li>
+              <li className="text-zinc-400 text-sm inline-flex items-center gap-2"><MapPin className="w-4 h-4 shrink-0" />West & North Texas</li>
             </ul>
           </div>
         </div>
 
         <div className="max-w-7xl mx-auto pt-8 border-t border-zinc-900 text-center">
-          <p className="text-zinc-600 text-xs">
+          <p className="text-zinc-500 text-xs">
             © {new Date().getFullYear()} 4B Overhead Doors, LLC. All rights reserved.
           </p>
         </div>
