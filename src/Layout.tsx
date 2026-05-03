@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Phone, Mail, MapPin, Menu, X } from 'lucide-react';
-// SVG logo: ~2.5 KB, vector, renders instantly. Beats the 26 KB webp as
-// LCP candidate and eliminates the "image larger than displayed" hit.
-import logoUrl from './assets/4b-logo.svg';
+import logoUrl from './assets/4b-logo.webp';
 
 type NavItem = { label: string; to: string };
 
@@ -132,8 +130,8 @@ export default function Layout() {
           <img
             src={logoUrl}
             alt="4B Overhead Doors, LLC"
-            width={520}
-            height={230}
+            width={800}
+            height={437}
             className="h-20 md:h-24 w-auto object-contain drop-shadow-[0_4px_18px_rgba(0,0,0,0.65)]"
           />
         </Link>

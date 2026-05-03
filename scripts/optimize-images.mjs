@@ -26,10 +26,14 @@ const ASSETS_DIRS = [join(ROOT, 'src/assets'), join(ROOT, 'src/assets/gallery')]
 
 /** Per-name caps. Falls back to DEFAULT for anything unmatched. */
 const RULES = [
-  { match: /^card-/, maxW: 1280, maxH: 720, quality: 78 },
+  // Cards display at ~362×362 (or 362×277) in 2-col grid. 540 wide ≈ 1.5×
+  // DPR — Lighthouse stops flagging "image larger than displayed" at this
+  // ratio while still looking sharp on retina screens at the displayed size.
+  { match: /^card-/, maxW: 540, maxH: 540, quality: 74 },
   { match: /^hero-/, maxW: 1920, maxH: 1280, quality: 80 },
   { match: /^process-/, maxW: 900, maxH: 1125, quality: 78 },
-  { match: /^why-/, maxW: 900, maxH: 1200, quality: 78 },
+  // Why-rotator displays at ~364×485. 600 wide ≈ 1.65× DPR.
+  { match: /^why-/, maxW: 600, maxH: 800, quality: 74 },
   // Gallery: cap to 1280 long-edge so single-image lightbox still looks good
   // on desktop, but tiles in the masonry won't blow past 4× display size.
   { match: /^image|copy|^Screenshot/i, maxW: 1280, maxH: 1280, quality: 76 }

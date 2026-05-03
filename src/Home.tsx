@@ -340,8 +340,8 @@ function WhyPhotoRotator() {
       <img
         src={slot0Src}
         alt="4B Overhead Doors craftsmanship"
-        width={750}
-        height={1000}
+        width={600}
+        height={800}
         loading="eager"
         decoding="async"
         fetchPriority={activeSlot === 0 ? 'high' : 'low'}
@@ -353,8 +353,8 @@ function WhyPhotoRotator() {
         src={slot1Src}
         alt=""
         aria-hidden="true"
-        width={750}
-        height={1000}
+        width={600}
+        height={800}
         loading="lazy"
         decoding="async"
         fetchPriority={activeSlot === 1 ? 'high' : 'low'}
@@ -429,10 +429,10 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
-            { icon: <HomeIcon className="w-5 h-5" />, title: 'Residential Garage Doors', desc: "Enhance your home's curb appeal with premium, high-quality residential doors designed for durability and style.", img: cardResidential, imgW: 940, imgH: 720, imgAlt: 'Premium residential garage door on a Texas home installed by 4B Overhead Doors' },
-            { icon: <Building2 className="w-5 h-5" />, title: 'Commercial Garage Doors', desc: 'Heavy-duty, reliable commercial doors built to withstand the toughest industrial environments — including TxDOT highway department projects.', img: cardCommercial, imgW: 540, imgH: 720, imgAlt: 'Heavy-duty commercial overhead door on an industrial building, installed for a TxDOT-style project' },
-            { icon: <Wrench className="w-5 h-5" />, title: 'Repairs & Maintenance', desc: 'Fast, reliable repair services to keep your doors operating smoothly and safely year-round.', img: cardRepairs, imgW: 720, imgH: 720, imgAlt: 'Garage door technician performing spring and cable repair' },
-            { icon: <ArrowRight className="w-5 h-5" />, title: 'Installations', desc: 'Professional installation by fully insured experts, ensuring perfect fit and function from day one.', img: cardInstallations, imgW: 720, imgH: 720, imgAlt: 'New garage door installation in progress on a North Texas property' }
+            { icon: <HomeIcon className="w-5 h-5" />, title: 'Residential Garage Doors', desc: "Enhance your home's curb appeal with premium, high-quality residential doors designed for durability and style.", img: cardResidential, imgW: 540, imgH: 413, imgAlt: 'Premium residential garage door on a Texas home installed by 4B Overhead Doors' },
+            { icon: <Building2 className="w-5 h-5" />, title: 'Commercial Garage Doors', desc: 'Heavy-duty, reliable commercial doors built to withstand the toughest industrial environments — including TxDOT highway department projects.', img: cardCommercial, imgW: 405, imgH: 540, imgAlt: 'Heavy-duty commercial overhead door on an industrial building, installed for a TxDOT-style project' },
+            { icon: <Wrench className="w-5 h-5" />, title: 'Repairs & Maintenance', desc: 'Fast, reliable repair services to keep your doors operating smoothly and safely year-round.', img: cardRepairs, imgW: 540, imgH: 540, imgAlt: 'Garage door technician performing spring and cable repair' },
+            { icon: <ArrowRight className="w-5 h-5" />, title: 'Installations', desc: 'Professional installation by fully insured experts, ensuring perfect fit and function from day one.', img: cardInstallations, imgW: 540, imgH: 540, imgAlt: 'New garage door installation in progress on a North Texas property' }
           ].map((item, i) => (
             <a
               key={i}
