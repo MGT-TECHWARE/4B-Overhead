@@ -36,9 +36,10 @@ const RULES = [
   { match: /^process-/, maxW: 540, maxH: 720, quality: 74 },
   // Why-rotator displays at ~364×485. 600 wide ≈ 1.65× DPR.
   { match: /^why-/, maxW: 600, maxH: 800, quality: 74 },
-  // Logo displays at h-20/h-24 (≤96px tall = ~176×96). 400 wide covers 2×
-  // DPR for both header and footer placements.
-  { match: /^4b-logo/, maxW: 400, maxH: 220, quality: 80 },
+  // Logo displays at ~257×140 max (Lighthouse desktop emulation). 320 wide
+  // covers 1.25× displayed — crisp at the small header/footer placements,
+  // bytes drop ~40% from 400-wide source.
+  { match: /^4b-logo/, maxW: 320, maxH: 175, quality: 76 },
   // Gallery: cap to 1280 long-edge so single-image lightbox still looks good
   // on desktop, but tiles in the masonry won't blow past 4× display size.
   { match: /^image|copy|^Screenshot/i, maxW: 1280, maxH: 1280, quality: 76 }

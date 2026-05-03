@@ -249,8 +249,8 @@ export default function Layout() {
               <img
                 src={logoUrl}
                 alt="4B Overhead Doors, LLC"
-                width={400}
-                height={218}
+                width={320}
+                height={174}
                 loading="lazy"
                 decoding="async"
                 className="h-24 md:h-28 w-auto object-contain"
