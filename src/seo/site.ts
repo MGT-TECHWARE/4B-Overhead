@@ -67,7 +67,7 @@ export const ROUTES = {
   serviceAreas: {
     path: '/service-areas',
     title: 'Service Areas — North & West Texas | 4B Overhead Doors',
-    description: 'Garage door installation and repair across North & West Texas. Wichita Falls, Denton, Fort Worth, Dallas, Lubbock, Amarillo, Midland, and 13 more cities. Call (940) 781-1186.',
+    description: 'Garage door installation and repair across North & West Texas. Wichita Falls, Denton, Fort Worth, Dallas, Weatherford, Abilene, Vernon, and 8 more cities. Call (940) 781-1186.',
     breadcrumb: [
       { name: 'Home', path: '/' },
       { name: 'Service Areas', path: '/service-areas' }

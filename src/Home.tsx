@@ -25,12 +25,12 @@ import { CITIES } from './seo/cities';
 // breadth across both regions — full list lives at /service-areas.
 const FEATURED_CITIES = [
   'wichita-falls', 'denton', 'fort-worth', 'dallas',
-  'sherman', 'gainesville', 'lubbock', 'amarillo',
-  'abilene', 'midland', 'odessa', 'san-angelo'
+  'weatherford', 'aledo', 'azle', 'springtown',
+  'abilene', 'decatur', 'vernon', 'jacksboro'
 ].map(slug => CITIES.find(c => c.slug === slug)!).filter(Boolean);
 const ALL_CITY_COUNT = CITIES.length;
-import heroImage from './assets/hero-garage.webp';
-import heroImageMobile from './assets/hero-garage-768.webp';
+import heroVideo from './assets/hero-video.mp4';
+import heroPoster from './assets/hero-poster.webp';
 import cardResidential from './assets/card-residential.webp';
 import cardCommercial from './assets/card-commercial.webp';
 import cardRepairs from './assets/card-repairs.webp';
@@ -371,21 +371,22 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative min-h-[600px] h-[100svh] flex flex-col justify-center items-center text-center px-6 pt-28 md:pt-36 pb-12">
-        <div className="absolute inset-0 overflow-hidden">
+      <section className="relative min-h-[720px] h-[100svh] flex flex-col justify-center items-center text-center px-6 pt-28 md:pt-36 pb-12">
+        <div className="absolute inset-0 overflow-hidden bg-zinc-950">
+          <video
+            ref={(el) => { if (el) el.playbackRate = 1.35; }}
+            src={heroVideo}
+            poster={heroPoster}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label="Premium garage doors installed by 4B Overhead Doors"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-zinc-950/45 z-10"></div>
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-zinc-950 to-transparent z-10"></div>
-          <img
-            src={heroImage}
-            srcSet={`${heroImageMobile} 768w, ${heroImage} 1280w`}
-            sizes="100vw"
-            alt="Modern luxury home with premium garage doors"
-            width={1280}
-            height={960}
-            fetchPriority="high"
-            decoding="async"
-            className="w-full h-full object-cover"
-          />
         </div>
 
         <div className="relative z-20 max-w-4xl mx-auto flex flex-col items-center">
