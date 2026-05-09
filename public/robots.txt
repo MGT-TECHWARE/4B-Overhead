@@ -1,0 +1,32 @@
+# 4B Overhead Doors — robots.txt
+# Allow all reputable crawlers, including AI search bots, by default.
+# Reference: https://developers.google.com/search/docs/crawling-indexing/robots/intro
+
+User-agent: *
+Allow: /
+
+# Explicit allow for AI / answer-engine crawlers (some honor only User-agent-specific rules).
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# No private/admin areas to block on this site.
+# Sitemap discovery:
+Sitemap: https://4boverheaddoors.com/sitemap.xml

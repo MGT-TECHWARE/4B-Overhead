@@ -1,32 +1,48 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight, Phone, X } from 'lucide-react';
+import { GALLERY } from './assets/gallery/manifest';
 
-const galleryModules = import.meta.glob('./assets/gallery/*.webp', {
+// Vite returns a URL string for each .webp in /assets/gallery. We pair these
+// with the manifest's intrinsic dimensions so <img> can declare width/height
+// and the browser reserves correct layout space — no CLS as the masonry fills.
+const galleryUrls = import.meta.glob('./assets/gallery/*.webp', {
   eager: true,
   query: '?url',
   import: 'default'
 }) as Record<string, string>;
 
-function naturalKey(path: string) {
-  const name = path.split('/').pop() ?? path;
-  const m = name.match(/(\d+)/);
-  return m ? parseInt(m[1], 10) : 0;
+interface GalleryItem {
+  url: string;
+  w: number;
+  h: number;
+  alt: string;
 }
 
-const images: string[] = Object.entries(galleryModules)
-  .sort(([a], [b]) => naturalKey(a) - naturalKey(b))
-  .map(([, url]) => url);
+const items: GalleryItem[] = GALLERY.map((entry, i) => ({
+  url: galleryUrls[`./assets/gallery/${entry.file}`],
+  w: entry.w,
+  h: entry.h,
+  alt: `4B Overhead Doors project photo ${i + 1}`
+})).filter(x => !!x.url);
+
+const INITIAL_BATCH = 24;
+const BATCH_SIZE = 24;
 
 export default function Work() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_BATCH);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
-  const total = images.length;
+  const total = items.length;
+  const visibleItems = items.slice(0, visibleCount);
+  const remaining = total - visibleCount;
 
   const close = () => setOpenIndex(null);
   const prev = () => setOpenIndex(i => (i === null ? null : (i - 1 + total) % total));
   const next = () => setOpenIndex(i => (i === null ? null : (i + 1) % total));
+  const showMore = () => setVisibleCount(c => Math.min(c + BATCH_SIZE, total));
+  const showAll = () => setVisibleCount(total);
 
   useEffect(() => {
     if (openIndex === null) return;
@@ -44,8 +60,8 @@ export default function Work() {
     };
   }, [openIndex, total]);
 
-  const counterText = useMemo(() =>
-    openIndex !== null ? `${openIndex + 1} / ${total}` : '',
+  const counterText = useMemo(
+    () => (openIndex !== null ? `${openIndex + 1} / ${total}` : ''),
     [openIndex, total]
   );
 
@@ -53,9 +69,12 @@ export default function Work() {
     <>
       {/* Page Header */}
       <section className="relative pt-36 md:pt-44 pb-16 md:pb-20 px-6 md:px-12 border-b border-zinc-900 overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
+        <div
+          className="absolute inset-0 opacity-[0.04] pointer-events-none"
+          style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '32px 32px' }}
+        />
         <div className="max-w-7xl mx-auto relative">
-          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Our Work</h3>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Our Work</p>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-white leading-[0.95] mb-6">
             Real installs. <br />
             <span className="text-zinc-500">Real results.</span>
@@ -69,24 +88,45 @@ export default function Work() {
       {/* Gallery */}
       <section className="py-12 md:py-16 px-4 md:px-12 max-w-7xl mx-auto">
         <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 md:gap-4 [column-fill:_balance]">
-          {images.map((src, i) => (
+          {visibleItems.map((item, i) => (
             <button
-              key={src}
+              key={item.url}
               type="button"
               onClick={() => setOpenIndex(i)}
               className="group block w-full mb-3 md:mb-4 break-inside-avoid rounded-xl md:rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800/60 hover:border-zinc-600 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 cursor-zoom-in"
               aria-label={`Open photo ${i + 1} of ${total}`}
             >
               <img
-                src={src}
-                alt={`4B Overhead Doors project photo ${i + 1}`}
-                loading="lazy"
+                src={item.url}
+                alt={item.alt}
+                width={item.w}
+                height={item.h}
+                loading={i < 8 ? 'eager' : 'lazy'}
                 decoding="async"
                 className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-[1.02]"
               />
             </button>
           ))}
         </div>
+
+        {remaining > 0 && (
+          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={showMore}
+              className="inline-flex items-center justify-center gap-2 bg-white text-zinc-950 px-6 py-3 rounded-md font-semibold text-sm tracking-wide hover:bg-zinc-200 transition-colors"
+            >
+              Show {Math.min(BATCH_SIZE, remaining)} more photos
+            </button>
+            <button
+              type="button"
+              onClick={showAll}
+              className="inline-flex items-center justify-center gap-2 text-sm font-semibold text-zinc-300 hover:text-white underline decoration-zinc-700 hover:decoration-white underline-offset-4 transition-colors"
+            >
+              Show all {total}
+            </button>
+          </div>
+        )}
       </section>
 
       {/* CTA Strip */}
@@ -148,10 +188,12 @@ export default function Work() {
           </button>
 
           <img
-            src={images[openIndex]}
-            alt={`Photo ${openIndex + 1} of ${total}`}
+            src={items[openIndex].url}
+            alt={items[openIndex].alt}
+            width={items[openIndex].w}
+            height={items[openIndex].h}
             onClick={(e) => e.stopPropagation()}
-            className="max-h-[85vh] max-w-[92vw] object-contain rounded-lg shadow-2xl"
+            className="max-h-[85vh] max-w-[92vw] w-auto h-auto object-contain rounded-lg shadow-2xl"
           />
 
           <button
