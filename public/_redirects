@@ -1,1 +1,9 @@
+# Guard: never serve the SPA HTML fallback for asset URLs. Without this, a
+# request for a not-yet-propagated /assets/ file during a deploy's switchover
+# window returns index.html with the /assets/* immutable cache header — and
+# Cloudflare's edge caches that wrong answer for a year (site goes blank).
+# Rewriting to the same path makes a missing asset a plain 404 instead:
+# harmless, uncached, self-healing once propagation finishes.
+/assets/*    /assets/:splat    200
+
 /*    /index.html   200
