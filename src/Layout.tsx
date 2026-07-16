@@ -9,6 +9,7 @@ const navLinks: NavItem[] = [
   { label: 'Services', to: '/#services' },
   { label: 'Our Work', to: '/work' },
   { label: 'Service Areas', to: '/service-areas' },
+  { label: 'Blog', to: '/blog' },
   { label: 'FAQ', to: '/#faq' },
   { label: 'Reviews', to: '/#reviews' },
   { label: 'Contact', to: '/#contact' }
@@ -270,6 +271,7 @@ export default function Layout() {
               <li><a href="/#reviews" onClick={(e) => handleNavClick(e, '/#reviews')} className="text-zinc-400 hover:text-white transition-colors text-sm">Reviews</a></li>
               <li><a href="/#faq" onClick={(e) => handleNavClick(e, '/#faq')} className="text-zinc-400 hover:text-white transition-colors text-sm">FAQ</a></li>
               <li><Link to="/service-areas" className="text-zinc-400 hover:text-white transition-colors text-sm">Service Areas</Link></li>
+              <li><Link to="/blog" className="text-zinc-400 hover:text-white transition-colors text-sm">Blog</Link></li>
               <li><a href="/#contact" onClick={(e) => handleNavClick(e, '/#contact')} className="text-zinc-400 hover:text-white transition-colors text-sm">Contact</a></li>
             </ul>
           </div>

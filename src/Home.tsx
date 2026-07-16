@@ -30,7 +30,9 @@ const FEATURED_CITIES = [
 ].map(slug => CITIES.find(c => c.slug === slug)!).filter(Boolean);
 const ALL_CITY_COUNT = CITIES.length;
 import heroVideo from './assets/hero-video.mp4';
+import heroVideoMobile from './assets/hero-video-mobile.mp4';
 import heroPoster from './assets/hero-poster.webp';
+import heroPosterMobile from './assets/hero-poster-mobile.webp';
 import cardResidential from './assets/card-residential.webp';
 import cardCommercial from './assets/card-commercial.webp';
 import cardRepairs from './assets/card-repairs.webp';
@@ -49,10 +51,56 @@ import why7 from './assets/why-7.webp';
 import why8 from './assets/why-8.webp';
 import why9 from './assets/why-9.webp';
 import why10 from './assets/why-10.webp';
+import VideoShowcase from './VideoShowcase';
 
 const whyPhotos = [why1, why2, why3, why4, why5, why6, why7, why8, why9, why10];
 
 type ContactStatus = 'idle' | 'submitting' | 'success' | 'error';
+
+// Zafe lead capture. The browser POSTs directly so the request carries an
+// Origin header matching the widget's allowed_origins allowlist. Fired
+// alongside the /api/contact email so a submit both notifies the office and
+// lands as a lead in the Zafe dashboard (Leads inbox, channel "form").
+const ZAFE_ENDPOINT = 'https://ufshuedarhueuituppjo.supabase.co/functions/v1/capture';
+const ZAFE_APIKEY = 'sb_publishable_pdkOzNe8XMP9lI23RKdY8Q_XSSOi8Zp';
+const ZAFE_PUBLIC_KEY = '3fb1ed374de9a1495b8b652b0a210d44eed862360e0d8b3d';
+
+const SERVICE_LABELS: Record<string, string> = {
+  residential: 'Residential Doors',
+  commercial: 'Commercial Doors',
+  repair: 'Repairs & Maintenance',
+  other: 'Other',
+};
+
+interface ZafeLead {
+  name: string;
+  email: string;
+  phone: string;
+  service: string;
+  message: string;
+}
+
+async function captureZafeLead(lead: ZafeLead): Promise<void> {
+  try {
+    await fetch(ZAFE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: ZAFE_APIKEY },
+      body: JSON.stringify({
+        publicKey: ZAFE_PUBLIC_KEY,
+        type: 'form',
+        contact: { name: lead.name, email: lead.email, phone: lead.phone },
+        answers: [
+          { question: 'Service Needed', answer: SERVICE_LABELS[lead.service] || lead.service || 'Not specified' },
+          { question: 'Message', answer: lead.message },
+        ],
+        sourceUrl: location.href,
+        website: '',
+      }),
+    });
+  } catch {
+    // Non-fatal: the /api/contact email still notifies the office.
+  }
+}
 
 function ContactForm() {
   const [name, setName] = React.useState('');
@@ -72,6 +120,13 @@ function ContactForm() {
 
     setStatus('submitting');
     setErrorMessage('');
+
+    // Send the lead to Zafe in parallel with the email. Fire-and-forget so a
+    // Zafe hiccup never blocks the office notification. Skip if the honeypot
+    // was filled (bot).
+    if (!honey) {
+      captureZafeLead({ name, email, phone, service, message });
+    }
 
     try {
       const response = await fetch('/api/contact', {
@@ -375,6 +430,18 @@ export default function Home() {
         <div className="absolute inset-0 overflow-hidden bg-zinc-950">
           <video
             ref={(el) => { if (el) el.playbackRate = 1.35; }}
+            src={heroVideoMobile}
+            poster={heroPosterMobile}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label="Premium garage doors installed by 4B Overhead Doors"
+            className="md:hidden absolute inset-0 w-full h-full object-cover"
+          />
+          <video
+            ref={(el) => { if (el) el.playbackRate = 1.35; }}
             src={heroVideo}
             poster={heroPoster}
             autoPlay
@@ -383,7 +450,7 @@ export default function Home() {
             playsInline
             preload="metadata"
             aria-label="Premium garage doors installed by 4B Overhead Doors"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="hidden md:block absolute inset-0 w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-zinc-950/45 z-10"></div>
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-zinc-950 to-transparent z-10"></div>
@@ -419,6 +486,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Video Showcase Section */}
+      <VideoShowcase />
+
       {/* Expertise Section */}
       <section id="services" className="scroll-mt-28 md:scroll-mt-36 py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="mb-16">
@@ -431,15 +501,15 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
-            { icon: <HomeIcon className="w-5 h-5" />, title: 'Residential Garage Doors', desc: "Enhance your home's curb appeal with premium, high-quality residential doors designed for durability and style.", img: cardResidential, imgW: 540, imgH: 413, imgAlt: 'Premium residential garage door on a Texas home installed by 4B Overhead Doors' },
-            { icon: <Building2 className="w-5 h-5" />, title: 'Commercial Garage Doors', desc: 'Heavy-duty, reliable commercial doors built to withstand the toughest industrial environments — including TxDOT highway department projects.', img: cardCommercial, imgW: 405, imgH: 540, imgAlt: 'Heavy-duty commercial overhead door on an industrial building, installed for a TxDOT-style project' },
-            { icon: <Wrench className="w-5 h-5" />, title: 'Repairs & Maintenance', desc: 'Fast, reliable repair services to keep your doors operating smoothly and safely year-round.', img: cardRepairs, imgW: 540, imgH: 540, imgAlt: 'Garage door technician performing spring and cable repair' },
-            { icon: <ArrowRight className="w-5 h-5" />, title: 'Installations', desc: 'Professional installation by fully insured experts, ensuring perfect fit and function from day one.', img: cardInstallations, imgW: 540, imgH: 540, imgAlt: 'New garage door installation in progress on a North Texas property' }
+            { icon: <HomeIcon className="w-5 h-5" />, title: 'Residential Garage Doors', desc: "Enhance your home's curb appeal with premium, high-quality residential doors designed for durability and style.", img: cardResidential, imgW: 540, imgH: 413, imgAlt: 'Premium residential garage door on a Texas home installed by 4B Overhead Doors', pos: 'center' },
+            { icon: <Building2 className="w-5 h-5" />, title: 'Commercial Garage Doors', desc: 'Heavy-duty, reliable commercial doors built to withstand the toughest industrial environments — including TxDOT highway department projects.', img: cardCommercial, imgW: 405, imgH: 540, imgAlt: 'Heavy-duty commercial overhead door on an industrial building, installed for a TxDOT-style project', pos: 'center' },
+            { icon: <Wrench className="w-5 h-5" />, title: 'Repairs & Maintenance', desc: 'Fast, reliable repair services to keep your doors operating smoothly and safely year-round.', img: cardRepairs, imgW: 540, imgH: 540, imgAlt: 'Garage door technician performing spring and cable repair', pos: 'center' },
+            { icon: <ArrowRight className="w-5 h-5" />, title: 'Installations', desc: 'Professional installation by fully insured experts, ensuring perfect fit and function from day one.', img: cardInstallations, imgW: 1080, imgH: 1558, imgAlt: '4B Overhead Doors technicians installing a tall commercial overhead door from a scissor lift inside a North Texas warehouse', pos: 'center 30%' }
           ].map((item, i) => (
             <a
               key={i}
               href="#contact"
-              className="group relative rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800/50 p-7 md:p-10 min-h-[220px] aspect-auto sm:aspect-[16/9] flex flex-col justify-end transition-all hover:border-zinc-600 hover:-translate-y-1 duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+              className="group relative rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800/50 p-7 md:p-10 min-h-[260px] aspect-auto sm:aspect-[4/3] flex flex-col justify-end transition-all hover:border-zinc-600 hover:-translate-y-1 duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
             >
               <div className="absolute inset-0">
                 <img
@@ -449,6 +519,7 @@ export default function Home() {
                   height={item.imgH}
                   loading="lazy"
                   decoding="async"
+                  style={{ objectPosition: item.pos }}
                   className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
@@ -572,6 +643,16 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
+              {
+                name: 'Roland Conwell',
+                date: 'June 29, 2026',
+                quote: "Had two insulated doors with openers installed by Colten. They fit perfectly with style and color ordered. I like that I can open/close either or both from my phone! Colten got here at time we chose, removed and got rid of old wooden doors and cleaned up well after finishing installation. The company was at the best price of 5 estimates received. I wish all businesses would do as good of work as Colten did! 5 out of 5!!"
+              },
+              {
+                name: 'Becky Bartley Thornhill',
+                date: 'June 28, 2026',
+                quote: "If you're in need of new garage doors we highly recommend Colten with 4B Overhead Doors. Colten was prompt every time he came to our house. He's very professional, precise, and we thought more than reasonable. It was good doing business with a company that returned my calls and wanted to do a good job. Thank you Colten!"
+              },
               {
                 name: 'Nancy Shahan',
                 date: 'November 17, 2025',
