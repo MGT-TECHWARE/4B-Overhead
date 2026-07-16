@@ -16,7 +16,6 @@ import {
   type RouteMeta
 } from './site';
 import type { City } from './cities';
-import { POSTS, type BlogPostMeta, type BlogFaq } from './posts';
 
 const BUSINESS_ID = `${SITE_URL}/#business`;
 const ORG_ID = `${SITE_URL}/#organization`;
@@ -193,63 +192,13 @@ function breadcrumbNode(items: ReadonlyArray<{ name: string; path: string }>) {
 }
 
 function faqNode() {
-  return faqNodeFrom(FAQS);
-}
-
-function faqNodeFrom(faqs: ReadonlyArray<BlogFaq>) {
   return {
     '@type': 'FAQPage',
-    mainEntity: faqs.map(f => ({
+    mainEntity: FAQS.map(f => ({
       '@type': 'Question',
       name: f.q,
       acceptedAnswer: { '@type': 'Answer', text: f.a }
     }))
-  };
-}
-
-const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
-
-/** Blog index node — lists every article so search engines see the collection. */
-function blogNode() {
-  return {
-    '@type': 'Blog',
-    '@id': `${SITE_URL}/blog#blog`,
-    url: `${SITE_URL}/blog`,
-    name: 'Garage Door Tips & Guides',
-    description: ROUTES.blog.description,
-    publisher: { '@id': ORG_ID },
-    inLanguage: 'en-US',
-    blogPost: POSTS.map(p => ({
-      '@type': 'BlogPosting',
-      '@id': `${SITE_URL}/blog/${p.slug}#article`,
-      headline: p.title,
-      url: `${SITE_URL}/blog/${p.slug}`,
-      datePublished: p.date,
-      dateModified: p.updated ?? p.date,
-      author: { '@id': PERSON_ID },
-      image: OG_IMAGE
-    }))
-  };
-}
-
-/** Per-article BlogPosting node. */
-function blogPostingNode(post: BlogPostMeta) {
-  const postUrl = `${SITE_URL}/blog/${post.slug}`;
-  return {
-    '@type': 'BlogPosting',
-    '@id': `${postUrl}#article`,
-    headline: post.title,
-    description: post.description,
-    image: OG_IMAGE,
-    datePublished: post.date,
-    dateModified: post.updated ?? post.date,
-    author: { '@id': PERSON_ID },
-    publisher: { '@id': ORG_ID },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': `${postUrl}#webpage` },
-    isPartOf: { '@id': `${SITE_URL}/blog#blog` },
-    articleSection: post.category,
-    keywords: post.primaryKeyword,
-    inLanguage: 'en-US'
   };
 }
 
@@ -332,45 +281,9 @@ export function jsonLdGraph(routeKey: RouteKey): object {
     baseGraph.push(faqNode());
   }
 
-  if (routeKey === 'blog') {
-    baseGraph.push(blogNode());
-  }
-
   return {
     '@context': 'https://schema.org',
     '@graph': baseGraph
-  };
-}
-
-/** Compose the @graph for a single blog article. */
-export function jsonLdGraphPost(post: BlogPostMeta): object {
-  const path = `/blog/${post.slug}`;
-  const route: RouteMeta = {
-    path,
-    title: post.metaTitle,
-    description: post.description,
-    breadcrumb: [
-      { name: 'Home', path: '/' },
-      { name: 'Blog', path: '/blog' },
-      { name: post.title, path }
-    ]
-  };
-
-  const graph: object[] = [
-    organizationNode(),
-    personNode(),
-    websiteNode(),
-    webpageNode(route),
-    blogPostingNode(post)
-  ];
-
-  if (post.faqs.length > 0) {
-    graph.push(faqNodeFrom(post.faqs));
-  }
-
-  return {
-    '@context': 'https://schema.org',
-    '@graph': graph
   };
 }
 
@@ -422,8 +335,4 @@ export function jsonLdString(routeKey: RouteKey): string {
 
 export function jsonLdStringCity(city: City): string {
   return JSON.stringify(jsonLdGraphCity(city), null, 2);
-}
-
-export function jsonLdStringPost(post: BlogPostMeta): string {
-  return JSON.stringify(jsonLdGraphPost(post), null, 2);
 }

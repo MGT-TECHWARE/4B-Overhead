@@ -72,15 +72,6 @@ export const ROUTES = {
       { name: 'Home', path: '/' },
       { name: 'Service Areas', path: '/service-areas' }
     ]
-  },
-  blog: {
-    path: '/blog',
-    title: 'Garage Door Tips & Guides — Blog | 4B Overhead Doors',
-    description: 'Garage door buying guides, repair help, and maintenance tips for West & North Texas homeowners and businesses, from family-owned 4B Overhead Doors.',
-    breadcrumb: [
-      { name: 'Home', path: '/' },
-      { name: 'Blog', path: '/blog' }
-    ]
   }
 } as const satisfies Record<string, RouteMeta>;
 
@@ -88,18 +79,6 @@ export type RouteKey = keyof typeof ROUTES;
 
 /** Real Facebook reviews displayed on the homepage. Schema must match visible content. */
 export const REVIEWS = [
-  {
-    author: 'Roland Conwell',
-    date: '2026-06-29',
-    rating: 5,
-    body: "Had two insulated doors with openers installed by Colten. They fit perfectly with style and color ordered. I like that I can open/close either or both from my phone! Colten got here at time we chose, removed and got rid of old wooden doors and cleaned up well after finishing installation. The company was at the best price of 5 estimates received. I wish all businesses would do as good of work as Colten did! 5 out of 5!!"
-  },
-  {
-    author: 'Becky Bartley Thornhill',
-    date: '2026-06-28',
-    rating: 5,
-    body: "If you're in need of new garage doors we highly recommend Colten with 4B Overhead Doors. Colten was prompt every time he came to our house. He's very professional, precise, and we thought more than reasonable. It was good doing business with a company that returned my calls and wanted to do a good job. Thank you Colten!"
-  },
   {
     author: 'Nancy Shahan',
     date: '2025-11-17',

@@ -20,11 +20,9 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SITE_URL, ROUTES, type RouteKey } from '../src/seo/site';
 import { CITIES, type City } from '../src/seo/cities';
-import { POSTS, type BlogPostMeta } from '../src/seo/posts';
 import {
   jsonLdString,
   jsonLdStringCity,
-  jsonLdStringPost,
   cityTitle,
   cityDescription
 } from '../src/seo/jsonld';
@@ -235,31 +233,6 @@ async function processCity(
   return outPath;
 }
 
-async function processPost(
-  post: BlogPostMeta,
-  indexTemplate: string,
-  assets: AssetIndex
-): Promise<string> {
-  const path = `/blog/${post.slug}`;
-  const canonical = fullUrl(path);
-  const head = buildHead(
-    {
-      title: post.metaTitle,
-      description: post.description,
-      canonical,
-      ogUrl: canonical,
-      jsonLd: jsonLdStringPost(post)
-    },
-    { assets, isHome: false }
-  );
-
-  const html = injectInto(indexTemplate, head, assets.inlineCss);
-  const outPath = join(DIST, 'blog', post.slug, 'index.html');
-  await mkdir(dirname(outPath), { recursive: true });
-  await writeFile(outPath, html, 'utf8');
-  return outPath;
-}
-
 async function generateSitemap(): Promise<string> {
   const today = new Date().toISOString().slice(0, 10);
   const entries: Array<{ loc: string; priority: string; changefreq: string }> = [];
@@ -276,13 +249,6 @@ async function generateSitemap(): Promise<string> {
     entries.push({
       loc: fullUrl(`/service-areas/${city.slug}`),
       priority: '0.7',
-      changefreq: 'monthly'
-    });
-  }
-  for (const post of POSTS) {
-    entries.push({
-      loc: fullUrl(`/blog/${post.slug}`),
-      priority: '0.6',
       changefreq: 'monthly'
     });
   }
@@ -340,11 +306,6 @@ async function generateLlmsTxt(): Promise<string> {
 - [Home](${SITE_URL}/): services overview, why-us, reviews, FAQ, contact form
 - [Our Work](${SITE_URL}/work): photo gallery of recent residential and commercial installs
 - [Service Areas](${SITE_URL}/service-areas): full list of cities served across North & West Texas
-- [Blog](${SITE_URL}/blog): garage door buying guides, repair help, and maintenance tips
-
-## Blog articles (${POSTS.length})
-
-${POSTS.map(p => `- [${p.title}](${SITE_URL}/blog/${p.slug})`).join('\n')}
 
 ## City pages (${CITIES.length})
 
@@ -372,9 +333,6 @@ async function main(): Promise<void> {
   }
   for (const city of CITIES) {
     written.push(await processCity(city, indexTemplate, assets));
-  }
-  for (const post of POSTS) {
-    written.push(await processPost(post, indexTemplate, assets));
   }
   written.push(await generateSitemap());
   written.push(await generateLlmsTxt());

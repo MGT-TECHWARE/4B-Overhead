@@ -9,8 +9,6 @@ import Home from './Home';
 const Work = lazy(() => import('./Work'));
 const ServiceAreas = lazy(() => import('./ServiceAreas'));
 const CityPage = lazy(() => import('./CityPage'));
-const Blog = lazy(() => import('./Blog'));
-const BlogPost = lazy(() => import('./BlogPost'));
 
 function RouteFallback() {
   return (
@@ -49,22 +47,6 @@ export default function App() {
           element={
             <Suspense fallback={<RouteFallback />}>
               <CityPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="blog"
-          element={
-            <Suspense fallback={<RouteFallback />}>
-              <Blog />
-            </Suspense>
-          }
-        />
-        <Route
-          path="blog/:slug"
-          element={
-            <Suspense fallback={<RouteFallback />}>
-              <BlogPost />
             </Suspense>
           }
         />
