@@ -9,7 +9,8 @@
     "build:vite-only": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "gen:images": "tsx scripts/gen-images.ts"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
