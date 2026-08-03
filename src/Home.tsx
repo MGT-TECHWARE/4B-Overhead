@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { FAQS } from './seo/site';
 import { CITIES } from './seo/cities';
+import { submitZafeLead } from './lib/zafeLead';
 
 // Featured cities surfaced in the home #service-areas teaser. Hand-picked for
 // breadth across both regions — full list lives at /service-areas.
@@ -57,50 +58,12 @@ const whyPhotos = [why1, why2, why3, why4, why5, why6, why7, why8, why9, why10];
 
 type ContactStatus = 'idle' | 'submitting' | 'success' | 'error';
 
-// Zafe lead capture. The browser POSTs directly so the request carries an
-// Origin header matching the widget's allowed_origins allowlist. Fired
-// alongside the /api/contact email so a submit both notifies the office and
-// lands as a lead in the Zafe dashboard (Leads inbox, channel "form").
-const ZAFE_ENDPOINT = 'https://ufshuedarhueuituppjo.supabase.co/functions/v1/capture';
-const ZAFE_APIKEY = 'sb_publishable_pdkOzNe8XMP9lI23RKdY8Q_XSSOi8Zp';
-const ZAFE_PUBLIC_KEY = '3fb1ed374de9a1495b8b652b0a210d44eed862360e0d8b3d';
-
 const SERVICE_LABELS: Record<string, string> = {
   residential: 'Residential Doors',
   commercial: 'Commercial Doors',
   repair: 'Repairs & Maintenance',
   other: 'Other',
 };
-
-interface ZafeLead {
-  name: string;
-  email: string;
-  phone: string;
-  service: string;
-  message: string;
-}
-
-async function captureZafeLead(lead: ZafeLead): Promise<void> {
-  try {
-    await fetch(ZAFE_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', apikey: ZAFE_APIKEY },
-      body: JSON.stringify({
-        publicKey: ZAFE_PUBLIC_KEY,
-        type: 'form',
-        contact: { name: lead.name, email: lead.email, phone: lead.phone },
-        answers: [
-          { question: 'Service Needed', answer: SERVICE_LABELS[lead.service] || lead.service || 'Not specified' },
-          { question: 'Message', answer: lead.message },
-        ],
-        sourceUrl: location.href,
-        website: '',
-      }),
-    });
-  } catch {
-    // Non-fatal: the /api/contact email still notifies the office.
-  }
-}
 
 function ContactForm() {
   const [name, setName] = React.useState('');
@@ -125,7 +88,20 @@ function ContactForm() {
     // Zafe hiccup never blocks the office notification. Skip if the honeypot
     // was filled (bot).
     if (!honey) {
-      captureZafeLead({ name, email, phone, service, message });
+      void submitZafeLead({
+        type: 'form',
+        name,
+        email,
+        phone,
+        answers: [
+          {
+            question: 'Service Needed',
+            answer: SERVICE_LABELS[service] || service || 'Not specified',
+          },
+          { question: 'Message', answer: message },
+        ],
+        summary: SERVICE_LABELS[service] || 'Contact form inquiry',
+      });
     }
 
     try {

@@ -1,7 +1,33 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Phone, Mail, MapPin, Menu, X } from 'lucide-react';
 import logoUrl from './assets/4b-logo.webp';
+
+// The chatbot is interaction-only UI — nothing above the fold depends on it.
+// Split it into its own chunk and don't even request that chunk until the main
+// thread goes idle, so it never competes with the hero LCP or the route bundle.
+const ZafeChatbot = lazy(() => import('./ZafeChatbot'));
+
+function DeferredChatbot() {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    // requestIdleCallback isn't in Safari <17; the timeout fallback keeps the
+    // widget from silently never mounting there.
+    const schedule =
+      window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 2000));
+    const cancel = window.cancelIdleCallback ?? window.clearTimeout;
+    const id = schedule(() => setReady(true));
+    return () => cancel(id as number);
+  }, []);
+
+  if (!ready) return null;
+  return (
+    <Suspense fallback={null}>
+      <ZafeChatbot />
+    </Suspense>
+  );
+}
 
 type NavItem = { label: string; to: string };
 
@@ -292,6 +318,8 @@ export default function Layout() {
           </p>
         </div>
       </footer>
+
+      <DeferredChatbot />
     </div>
   );
 }

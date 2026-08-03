@@ -25,9 +25,11 @@
          external CSS — kills the Google Fonts dependency. -->
 
     <!-- Zafe page-view tracking. Fires on load and on every SPA route change
-         (pushState/popstate) so dashboard analytics see client-side nav. -->
+         (pushState/popstate) so dashboard analytics see client-side nav.
+         The navigator.webdriver guard drops automated traffic (Lighthouse,
+         Playwright, headless crawlers) so the dashboard counts real visits. -->
     <script>
-    (function(){var k="3fb1ed374de9a1495b8b652b0a210d44eed862360e0d8b3d",e="https://ufshuedarhueuituppjo.supabase.co/functions/v1/track-view",a="sb_publishable_pdkOzNe8XMP9lI23RKdY8Q_XSSOi8Zp";
+    (function(){if(navigator.webdriver)return;var k="3fb1ed374de9a1495b8b652b0a210d44eed862360e0d8b3d",e="https://ufshuedarhueuituppjo.supabase.co/functions/v1/track-view",a="sb_publishable_pdkOzNe8XMP9lI23RKdY8Q_XSSOi8Zp";
     function h(){try{fetch(e,{method:"POST",keepalive:true,headers:{"Content-Type":"application/json",apikey:a},body:JSON.stringify({publicKey:k,path:location.pathname,referrer:document.referrer||null})})}catch(x){}}
     h();var p=history.pushState;history.pushState=function(){p.apply(this,arguments);h()};addEventListener("popstate",h)})();
     </script>
