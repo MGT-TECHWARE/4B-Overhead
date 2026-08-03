@@ -6,6 +6,32 @@
 
 ---
 
+> ## ⚠️ This is a historical snapshot — do not read it as current state
+>
+> This file records the site as it existed on **2026-05-02**: a 2-page SPA with
+> no robots.txt, no sitemap, no canonical tags, and no structured data. It is
+> deliberately **not** updated, because its value is being the "before" that
+> later work is measured against.
+>
+> **The site today is 36 pages** with service, city, blog, about, and policy
+> routes, full JSON-LD, per-post OG cards, and Zafe lead capture. For current
+> state, read:
+>
+> | Question | File |
+> |---|---|
+> | What's the technical/crawl posture now? | `02-technical-onpage-audit.md` |
+> | What are the on-page rules and page inventory? | `03-onpage-audit.md` |
+> | Is the content any good? | `04-content-audit.md` |
+> | Can AI engines cite us? | `05-geo-aeo-audit.md` |
+> | What's blocking us off-site? | `06-authority-audit.md` |
+> | What do we do next? | `07-action-plan.md` |
+> | What changed and when? | `08-changelog.md` |
+>
+> Sections 1 and 11 below (business profile, open questions) are still the
+> useful parts — several of those gaps remain open.
+
+---
+
 ## 1. Inferred Business Profile
 
 | Field | Value | Source |
