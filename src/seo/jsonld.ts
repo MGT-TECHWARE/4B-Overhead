@@ -24,9 +24,21 @@ const ORG_ID = `${SITE_URL}/#organization`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
 const PERSON_ID = `${SITE_URL}/#colten-beaty`;
 
+/**
+ * Absolute URL for a PAGE path — always with a trailing slash.
+ *
+ * Cloudflare Pages serves `dist/<path>/index.html` at `/<path>/` and issues a
+ * 308 from `/<path>` to `/<path>/`. Emitting the slash-less form here made
+ * every canonical, og:url, and sitemap entry point at a URL that redirects,
+ * which is what split `/work` and `/work/` into two entries in Search Console.
+ * Canonicals must name the URL that actually returns 200.
+ *
+ * Do NOT use this for file URLs (og-image.jpg, icon-512.png) — those are real
+ * files and must not gain a slash.
+ */
 function url(path: string): string {
-  if (path === '/') return SITE_URL;
-  return `${SITE_URL}${path}`;
+  if (path === '/') return `${SITE_URL}/`;
+  return `${SITE_URL}${path}/`;
 }
 
 function organizationNode() {
@@ -35,7 +47,7 @@ function organizationNode() {
     '@id': ORG_ID,
     name: BUSINESS.legalName,
     alternateName: BUSINESS.shortName,
-    url: SITE_URL,
+    url: url('/'),
     logo: {
       '@type': 'ImageObject',
       url: `${SITE_URL}/icon-512.png`,
@@ -72,7 +84,7 @@ function localBusinessNode() {
     '@id': BUSINESS_ID,
     name: BUSINESS.legalName,
     alternateName: BUSINESS.shortName,
-    url: SITE_URL,
+    url: url('/'),
     image: `${SITE_URL}/og-image.jpg`,
     logo: `${SITE_URL}/icon-512.png`,
     telephone: BUSINESS.phone,
@@ -174,7 +186,7 @@ function websiteNode() {
   return {
     '@type': 'WebSite',
     '@id': WEBSITE_ID,
-    url: SITE_URL,
+    url: url('/'),
     name: BUSINESS.shortName,
     publisher: { '@id': ORG_ID },
     inLanguage: 'en-US'
@@ -214,17 +226,17 @@ const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 function blogNode() {
   return {
     '@type': 'Blog',
-    '@id': `${SITE_URL}/blog#blog`,
-    url: `${SITE_URL}/blog`,
+    '@id': `${url('/blog')}#blog`,
+    url: url('/blog'),
     name: 'Garage Door Tips & Guides',
     description: ROUTES.blog.description,
     publisher: { '@id': ORG_ID },
     inLanguage: 'en-US',
     blogPost: POSTS.map(p => ({
       '@type': 'BlogPosting',
-      '@id': `${SITE_URL}/blog/${p.slug}#article`,
+      '@id': `${url(`/blog/${p.slug}`)}#article`,
       headline: p.title,
-      url: `${SITE_URL}/blog/${p.slug}`,
+      url: url(`/blog/${p.slug}`),
       datePublished: p.date,
       dateModified: p.updated ?? p.date,
       author: { '@id': PERSON_ID },
@@ -235,7 +247,7 @@ function blogNode() {
 
 /** Per-article BlogPosting node. */
 function blogPostingNode(post: BlogPostMeta) {
-  const postUrl = `${SITE_URL}/blog/${post.slug}`;
+  const postUrl = url(`/blog/${post.slug}`);
   return {
     '@type': 'BlogPosting',
     '@id': `${postUrl}#article`,
@@ -247,7 +259,7 @@ function blogPostingNode(post: BlogPostMeta) {
     author: { '@id': PERSON_ID },
     publisher: { '@id': ORG_ID },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${postUrl}#webpage` },
-    isPartOf: { '@id': `${SITE_URL}/blog#blog` },
+    isPartOf: { '@id': `${url('/blog')}#blog` },
     articleSection: post.category,
     keywords: post.primaryKeyword,
     inLanguage: 'en-US'
@@ -289,28 +301,28 @@ function cityServiceNodes(city: City) {
   return [
     {
       '@type': 'Service',
-      '@id': `${SITE_URL}/service-areas/${city.slug}#service-residential`,
+      '@id': `${url(`/service-areas/${city.slug}`)}#service-residential`,
       name: `Residential Garage Door Installation in ${cityName}`,
       serviceType: 'Garage door installation',
       ...baseService
     },
     {
       '@type': 'Service',
-      '@id': `${SITE_URL}/service-areas/${city.slug}#service-commercial`,
+      '@id': `${url(`/service-areas/${city.slug}`)}#service-commercial`,
       name: `Commercial Overhead Door Installation in ${cityName}`,
       serviceType: 'Commercial overhead door installation',
       ...baseService
     },
     {
       '@type': 'Service',
-      '@id': `${SITE_URL}/service-areas/${city.slug}#service-repair`,
+      '@id': `${url(`/service-areas/${city.slug}`)}#service-repair`,
       name: `Garage Door Repair & Maintenance in ${cityName}`,
       serviceType: 'Garage door repair',
       ...baseService
     },
     {
       '@type': 'Service',
-      '@id': `${SITE_URL}/service-areas/${city.slug}#service-springs`,
+      '@id': `${url(`/service-areas/${city.slug}`)}#service-springs`,
       name: `Garage Door Spring Repair in ${cityName}`,
       serviceType: 'Garage door spring repair',
       ...baseService

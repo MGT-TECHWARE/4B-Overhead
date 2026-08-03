@@ -232,8 +232,14 @@ function injectInto(template: string, head: string, inlineCss?: AssetIndex['inli
   return stripped.replace(/<\/head>/i, `    ${head}\n  </head>`);
 }
 
+/**
+ * Absolute URL for a PAGE path — always with a trailing slash, matching what
+ * Cloudflare Pages actually serves. See the note on url() in src/seo/jsonld.ts:
+ * the slash-less form 308-redirects, and a canonical must not point at a
+ * redirect. Not for file URLs.
+ */
 function fullUrl(path: string): string {
-  return path === '/' ? SITE_URL : `${SITE_URL}${path}`;
+  return path === '/' ? `${SITE_URL}/` : `${SITE_URL}${path}/`;
 }
 
 async function processRoute(
