@@ -1,17 +1,44 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Phone, Mail, MapPin, Menu, X } from 'lucide-react';
 import logoUrl from './assets/4b-logo.webp';
+import { SERVICES } from './seo/services';
+
+// The chatbot is interaction-only UI — nothing above the fold depends on it.
+// Split it into its own chunk and don't even request that chunk until the main
+// thread goes idle, so it never competes with the hero LCP or the route bundle.
+const ZafeChatbot = lazy(() => import('./ZafeChatbot'));
+
+function DeferredChatbot() {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    // requestIdleCallback isn't in Safari <17; the timeout fallback keeps the
+    // widget from silently never mounting there.
+    const schedule =
+      window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 2000));
+    const cancel = window.cancelIdleCallback ?? window.clearTimeout;
+    const id = schedule(() => setReady(true));
+    return () => cancel(id as number);
+  }, []);
+
+  if (!ready) return null;
+  return (
+    <Suspense fallback={null}>
+      <ZafeChatbot />
+    </Suspense>
+  );
+}
 
 type NavItem = { label: string; to: string };
 
 const navLinks: NavItem[] = [
-  { label: 'Services', to: '/#services' },
+  { label: 'Services', to: '/services' },
   { label: 'Our Work', to: '/work' },
   { label: 'Service Areas', to: '/service-areas' },
+  { label: 'About', to: '/about' },
   { label: 'Blog', to: '/blog' },
   { label: 'FAQ', to: '/#faq' },
-  { label: 'Reviews', to: '/#reviews' },
   { label: 'Contact', to: '/#contact' }
 ];
 
@@ -240,11 +267,17 @@ export default function Layout() {
         </div>
       </div>
 
-      <Outlet />
+      {/* Semantic main landmark: gives screen readers a skip target and marks
+          the primary content region for search engines' content extraction. */}
+      <main id="main">
+        <Outlet />
+      </main>
 
       {/* Footer */}
-      <footer className="bg-[#0c0c0c] border-t border-zinc-900 pt-20 pb-10 px-6 md:px-12">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12 mb-16">
+      {/* pb clears the fixed chat launcher (bottom-5 + 56px tall), which would
+          otherwise sit on top of the policy links when scrolled to the bottom. */}
+      <footer className="bg-[#0c0c0c] border-t border-zinc-900 pt-20 pb-28 sm:pb-24 px-6 md:px-12">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-10 md:gap-12 mb-16">
           <div className="md:col-span-2">
             <Link to="/" onClick={handleLogoClick} className="inline-flex items-center mb-6" aria-label="4B Overhead Doors home">
               <img
@@ -263,14 +296,26 @@ export default function Layout() {
           </div>
 
           <div>
-            <h2 className="text-xs font-bold tracking-widest text-white uppercase mb-6">Quick Links</h2>
+            <h2 className="text-xs font-bold tracking-widest text-white uppercase mb-6">Services</h2>
             <ul className="space-y-4">
-              <li><a href="/#services" onClick={(e) => handleNavClick(e, '/#services')} className="text-zinc-400 hover:text-white transition-colors text-sm">Services</a></li>
+              {SERVICES.map(s => (
+                <li key={s.slug}>
+                  <Link to={`/services/${s.slug}`} className="text-zinc-400 hover:text-white transition-colors text-sm">
+                    {s.shortName}
+                  </Link>
+                </li>
+              ))}
+              <li><Link to="/service-areas" className="text-zinc-400 hover:text-white transition-colors text-sm">Service Areas</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="text-xs font-bold tracking-widest text-white uppercase mb-6">Company</h2>
+            <ul className="space-y-4">
+              <li><Link to="/about" className="text-zinc-400 hover:text-white transition-colors text-sm">About</Link></li>
               <li><Link to="/work" className="text-zinc-400 hover:text-white transition-colors text-sm">Our Work</Link></li>
-              <li><a href="/#why-us" onClick={(e) => handleNavClick(e, '/#why-us')} className="text-zinc-400 hover:text-white transition-colors text-sm">Why Choose Us</a></li>
               <li><a href="/#reviews" onClick={(e) => handleNavClick(e, '/#reviews')} className="text-zinc-400 hover:text-white transition-colors text-sm">Reviews</a></li>
               <li><a href="/#faq" onClick={(e) => handleNavClick(e, '/#faq')} className="text-zinc-400 hover:text-white transition-colors text-sm">FAQ</a></li>
-              <li><Link to="/service-areas" className="text-zinc-400 hover:text-white transition-colors text-sm">Service Areas</Link></li>
               <li><Link to="/blog" className="text-zinc-400 hover:text-white transition-colors text-sm">Blog</Link></li>
               <li><a href="/#contact" onClick={(e) => handleNavClick(e, '/#contact')} className="text-zinc-400 hover:text-white transition-colors text-sm">Contact</a></li>
             </ul>
@@ -286,12 +331,26 @@ export default function Layout() {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto pt-8 border-t border-zinc-900 text-center">
-          <p className="text-zinc-500 text-xs">
+        <div className="max-w-7xl mx-auto pt-8 border-t border-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-zinc-500 text-xs text-center sm:text-left">
             © {new Date().getFullYear()} 4B Overhead Doors, LLC. All rights reserved.
           </p>
+          <ul className="flex items-center gap-5">
+            <li>
+              <Link to="/privacy-policy" className="text-zinc-500 hover:text-zinc-300 transition-colors text-xs">
+                Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link to="/terms-of-service" className="text-zinc-500 hover:text-zinc-300 transition-colors text-xs">
+                Terms of Service
+              </Link>
+            </li>
+          </ul>
         </div>
       </footer>
+
+      <DeferredChatbot />
     </div>
   );
 }

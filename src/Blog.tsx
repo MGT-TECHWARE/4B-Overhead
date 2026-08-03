@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Clock } from 'lucide-react';
 import { POSTS, type BlogPostMeta } from './seo/posts';
 import { galleryUrl } from './blog/galleryUrls';
+import Breadcrumbs from './Breadcrumbs';
 import { blogHeroUrl } from './blog/heroUrls';
 
 function formatDate(iso: string): string {
@@ -28,6 +29,7 @@ export default function Blog() {
           style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '32px 32px' }}
         />
         <div className="max-w-7xl mx-auto relative">
+          <Breadcrumbs items={[{ name: 'Home', to: '/' }, { name: 'Blog' }]} />
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">The Blog</p>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-white leading-[0.95] mb-6">
             Garage door <br />

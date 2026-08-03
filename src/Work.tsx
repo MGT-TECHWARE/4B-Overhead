@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, ChevronRight, Maximize2, Phone, X } from 'lucide-react';
 import { GALLERY } from './assets/gallery/manifest';
 import { PROJECTS, type ProjectCategory } from './assets/gallery/projects';
+import Breadcrumbs from './Breadcrumbs';
 
 // Vite returns a URL string for each .webp in /assets/gallery. We pair these
 // with the manifest's intrinsic dimensions (needed for the justified layout
@@ -192,6 +193,7 @@ export default function Work() {
           style={{ backgroundImage: 'radial-gradient(#fff 1px, transparent 1px)', backgroundSize: '32px 32px' }}
         />
         <div className="max-w-7xl mx-auto relative">
+          <Breadcrumbs items={[{ name: 'Home', to: '/' }, { name: 'Our Work' }]} />
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Our Work</p>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-white leading-[0.95] mb-6">
             Real installs. <br />

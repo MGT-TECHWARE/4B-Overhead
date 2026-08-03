@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
+import Breadcrumbs from './Breadcrumbs';
 import {
   Home as HomeIcon,
   Building2,
@@ -7,7 +8,6 @@ import {
   ArrowRight,
   Phone,
   MapPin,
-  ChevronRight,
   ShieldCheck,
   Clock,
   Hammer,
@@ -98,19 +98,13 @@ function CityHero({ city }: { city: City }) {
         }}
       />
       <div className="max-w-7xl mx-auto relative">
-        <nav aria-label="Breadcrumb" className="mb-6">
-          <ol className="flex items-center gap-2 text-xs text-zinc-500">
-            <li>
-              <Link to="/" className="hover:text-zinc-300 transition-colors">Home</Link>
-            </li>
-            <li><ChevronRight className="w-3 h-3 text-zinc-700" aria-hidden="true" /></li>
-            <li>
-              <Link to="/service-areas" className="hover:text-zinc-300 transition-colors">Service Areas</Link>
-            </li>
-            <li><ChevronRight className="w-3 h-3 text-zinc-700" aria-hidden="true" /></li>
-            <li className="text-zinc-300">{city.name}</li>
-          </ol>
-        </nav>
+        <Breadcrumbs
+          items={[
+            { name: 'Home', to: '/' },
+            { name: 'Service Areas', to: '/service-areas' },
+            { name: city.name }
+          ]}
+        />
 
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">
           {city.region} · {city.county}

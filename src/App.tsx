@@ -11,6 +11,11 @@ const ServiceAreas = lazy(() => import('./ServiceAreas'));
 const CityPage = lazy(() => import('./CityPage'));
 const Blog = lazy(() => import('./Blog'));
 const BlogPost = lazy(() => import('./BlogPost'));
+const Services = lazy(() => import('./Services'));
+const ServicePage = lazy(() => import('./ServicePage'));
+const About = lazy(() => import('./About'));
+const PrivacyPolicy = lazy(() => import('./PrivacyPolicy'));
+const TermsOfService = lazy(() => import('./TermsOfService'));
 
 function RouteFallback() {
   return (
@@ -65,6 +70,46 @@ export default function App() {
           element={
             <Suspense fallback={<RouteFallback />}>
               <BlogPost />
+            </Suspense>
+          }
+        />
+        <Route
+          path="services"
+          element={
+            <Suspense fallback={<RouteFallback />}>
+              <Services />
+            </Suspense>
+          }
+        />
+        <Route
+          path="services/:slug"
+          element={
+            <Suspense fallback={<RouteFallback />}>
+              <ServicePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="about"
+          element={
+            <Suspense fallback={<RouteFallback />}>
+              <About />
+            </Suspense>
+          }
+        />
+        <Route
+          path="privacy-policy"
+          element={
+            <Suspense fallback={<RouteFallback />}>
+              <PrivacyPolicy />
+            </Suspense>
+          }
+        />
+        <Route
+          path="terms-of-service"
+          element={
+            <Suspense fallback={<RouteFallback />}>
+              <TermsOfService />
             </Suspense>
           }
         />

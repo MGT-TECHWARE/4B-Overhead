@@ -16,6 +16,7 @@ import {
   type RouteMeta
 } from './site';
 import type { City } from './cities';
+import { SERVICES, type ServiceDef } from './services';
 import { POSTS, type BlogPostMeta, type BlogFaq } from './posts';
 
 const BUSINESS_ID = `${SITE_URL}/#business`;
@@ -336,10 +337,122 @@ export function jsonLdGraph(routeKey: RouteKey): object {
     baseGraph.push(blogNode());
   }
 
+  if (routeKey === 'services') {
+    // The hub page lists every service, so declare them as an ItemList that
+    // points at the individual /services/* pages.
+    baseGraph.push({
+      '@type': 'ItemList',
+      '@id': `${url('/services')}#servicelist`,
+      itemListElement: SERVICES.map((s, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: s.name,
+        url: url(`/services/${s.slug}`)
+      }))
+    });
+  }
+
+  if (routeKey === 'about') {
+    // Bind the page to the Person entity — this is the E-E-A-T signal that a
+    // real, named operator stands behind the work.
+    baseGraph.push({
+      '@type': 'AboutPage',
+      '@id': `${url('/about')}#aboutpage`,
+      url: url('/about'),
+      name: ROUTES.about.title,
+      mainEntity: { '@id': PERSON_ID },
+      about: { '@id': BUSINESS_ID },
+      isPartOf: { '@id': WEBSITE_ID }
+    });
+  }
+
   return {
     '@context': 'https://schema.org',
     '@graph': baseGraph
   };
+}
+
+/**
+ * Compose the @graph for a single service landing page.
+ *
+ * The Service node names the LocalBusiness as `provider` rather than restating
+ * the business details, so there is exactly one business entity in the graph
+ * and Google can resolve the reference across pages.
+ */
+export function jsonLdGraphService(service: ServiceDef): object {
+  const path = `/services/${service.slug}`;
+  const serviceUrl = url(path);
+  const route: RouteMeta = {
+    path,
+    title: service.metaTitle,
+    description: service.description,
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Services', path: '/services' },
+      { name: service.shortName, path }
+    ]
+  };
+
+  const graph: object[] = [
+    organizationNode(),
+    personNode(),
+    websiteNode(),
+    localBusinessNode(),
+    webpageNode(route),
+    {
+      '@type': 'Service',
+      '@id': `${serviceUrl}#service`,
+      name: service.name,
+      description: service.description,
+      serviceType: service.shortName,
+      provider: { '@id': BUSINESS_ID },
+      areaServed: BUSINESS.areaServed.map(a => ({
+        '@type': 'AdministrativeArea',
+        name: a.name,
+        sameAs: a.sameAs
+      })),
+      // No price/priceCurrency: every quote is site-specific, and publishing a
+      // number we can't honor is worse than publishing none.
+      offers: {
+        '@type': 'Offer',
+        availability: 'https://schema.org/InStock',
+        priceSpecification: {
+          '@type': 'PriceSpecification',
+          priceCurrency: 'USD',
+          description: service.pricing
+        }
+      },
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: `${service.shortName} — what's included`,
+        itemListElement: service.includes.map(item => ({
+          '@type': 'Offer',
+          itemOffered: { '@type': 'Service', name: item }
+        }))
+      }
+    }
+  ];
+
+  if (service.faqs.length > 0) {
+    graph.push(faqNodeFrom(service.faqs));
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': graph
+  };
+}
+
+export function serviceTitle(service: ServiceDef): string {
+  return service.metaTitle;
+}
+
+export function serviceDescription(service: ServiceDef): string {
+  return service.description;
+}
+
+export function jsonLdStringService(service: ServiceDef): string {
+  return JSON.stringify(jsonLdGraphService(service));
 }
 
 /** Compose the @graph for a single blog article. */

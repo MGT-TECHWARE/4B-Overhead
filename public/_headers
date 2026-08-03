@@ -33,6 +33,11 @@
 /site.webmanifest
   Cache-Control: public, max-age=2592000
 
+# Per-post OG cards rendered at build time by scripts/post-build.mts. Not
+# content-hashed, but they only change when a post's hero photo changes.
+/og/*
+  Cache-Control: public, max-age=2592000
+
 # Crawler-facing files: refresh daily.
 /sitemap.xml
   Cache-Control: public, max-age=86400
