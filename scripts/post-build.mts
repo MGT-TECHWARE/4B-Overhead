@@ -21,10 +21,12 @@ import { fileURLToPath } from 'node:url';
 import { SITE_URL, BUSINESS, ROUTES, type RouteKey } from '../src/seo/site';
 import { CITIES, type City } from '../src/seo/cities';
 import { POSTS, type BlogPostMeta } from '../src/seo/posts';
+import { SERVICES, type ServiceDef } from '../src/seo/services';
 import {
   jsonLdString,
   jsonLdStringCity,
   jsonLdStringPost,
+  jsonLdStringService,
   cityTitle,
   cityDescription
 } from '../src/seo/jsonld';
@@ -289,6 +291,31 @@ async function processCity(
   return outPath;
 }
 
+async function processService(
+  service: ServiceDef,
+  indexTemplate: string,
+  assets: AssetIndex
+): Promise<string> {
+  const path = `/services/${service.slug}`;
+  const canonical = fullUrl(path);
+  const head = buildHead(
+    {
+      title: service.metaTitle,
+      description: service.description,
+      canonical,
+      ogUrl: canonical,
+      jsonLd: jsonLdStringService(service)
+    },
+    { assets, isHome: false }
+  );
+
+  const html = injectInto(indexTemplate, head, assets.inlineCss);
+  const outPath = join(DIST, 'services', service.slug, 'index.html');
+  await mkdir(dirname(outPath), { recursive: true });
+  await writeFile(outPath, html, 'utf8');
+  return outPath;
+}
+
 /**
  * Render a real 1200×630 OG card per blog post from that post's hero photo.
  *
@@ -375,6 +402,16 @@ async function generateSitemap(): Promise<string> {
       lastmod: today
     });
   }
+  for (const service of SERVICES) {
+    entries.push({
+      loc: fullUrl(`/services/${service.slug}`),
+      // Service pages are the primary commercial-intent targets — rank them
+      // above city pages and blog posts in the sitemap.
+      priority: '0.9',
+      changefreq: 'monthly',
+      lastmod: today
+    });
+  }
   for (const city of CITIES) {
     entries.push({
       loc: fullUrl(`/service-areas/${city.slug}`),
@@ -434,15 +471,14 @@ async function generateLlmsTxt(): Promise<string> {
 
 ## Services
 
-- Residential garage door installation
-- Commercial overhead door installation (heavy-duty, industrial)
-- Garage door repair & maintenance (springs, cables, openers, panels)
-- Garage door spring repair (emergency)
+${SERVICES.map(s => `- [${s.name}](${SITE_URL}/services/${s.slug}): ${s.description}`).join('\n')}
 - New construction installs (works with builders / GCs)
 
 ## Core pages
 
 - [Home](${SITE_URL}/): services overview, why-us, reviews, FAQ, contact form
+- [Services](${SITE_URL}/services): hub for all ${SERVICES.length} service pages
+- [About](${SITE_URL}/about): Colten Beaty, owner-operator; how the business runs
 - [Our Work](${SITE_URL}/work): photo gallery of recent residential and commercial installs
 - [Service Areas](${SITE_URL}/service-areas): full list of cities served across North & West Texas
 - [Blog](${SITE_URL}/blog): garage door buying guides, repair help, and maintenance tips
@@ -454,6 +490,11 @@ ${POSTS.map(p => `- [${p.title}](${SITE_URL}/blog/${p.slug})`).join('\n')}
 ## City pages (${CITIES.length})
 
 ${cityLines}
+
+## Policies
+
+- [Privacy Policy](${SITE_URL}/privacy-policy)
+- [Terms of Service](${SITE_URL}/terms-of-service)
 
 ## Optional
 
@@ -477,6 +518,9 @@ async function main(): Promise<void> {
   }
   for (const city of CITIES) {
     written.push(await processCity(city, indexTemplate, assets));
+  }
+  for (const service of SERVICES) {
+    written.push(await processService(service, indexTemplate, assets));
   }
   for (const post of POSTS) {
     written.push(await processPost(post, indexTemplate, assets));

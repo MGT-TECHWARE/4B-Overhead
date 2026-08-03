@@ -81,6 +81,42 @@ export const ROUTES = {
       { name: 'Home', path: '/' },
       { name: 'Blog', path: '/blog' }
     ]
+  },
+  services: {
+    path: '/services',
+    title: 'Garage Door Services — Install & Repair | 4B Overhead',
+    description: 'Residential installs, commercial overhead doors, repairs and maintenance, and emergency spring repair across West & North Texas. Free quotes — (940) 781-1186.',
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Services', path: '/services' }
+    ]
+  },
+  about: {
+    path: '/about',
+    title: 'About 4B Overhead Doors — Colten Beaty, Owner',
+    description: 'Meet Colten Beaty, owner-operator of 4B Overhead Doors, LLC. Family-owned and fully insured, serving West & North Texas — from custom homes to TxDOT projects.',
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'About', path: '/about' }
+    ]
+  },
+  privacyPolicy: {
+    path: '/privacy-policy',
+    title: 'Privacy Policy | 4B Overhead Doors',
+    description: 'How 4B Overhead Doors, LLC collects, uses, and protects the information you submit through this website.',
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Privacy Policy', path: '/privacy-policy' }
+    ]
+  },
+  termsOfService: {
+    path: '/terms-of-service',
+    title: 'Terms of Service | 4B Overhead Doors',
+    description: 'The terms that govern your use of the 4B Overhead Doors, LLC website, including quotes, service requests, and limitations of liability.',
+    breadcrumb: [
+      { name: 'Home', path: '/' },
+      { name: 'Terms of Service', path: '/terms-of-service' }
+    ]
   }
 } as const satisfies Record<string, RouteMeta>;
 
