@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin, Phone, ChevronRight } from 'lucide-react';
+import { ArrowRight, MapPin, Phone } from 'lucide-react';
 import { CITIES, type Region } from './seo/cities';
 import { BUSINESS } from './seo/site';
+import Breadcrumbs from './Breadcrumbs';
 
 const REGIONS: ReadonlyArray<Region> = ['North Texas', 'West Texas'];
 
@@ -23,15 +24,7 @@ export default function ServiceAreas() {
           }}
         />
         <div className="max-w-7xl mx-auto relative">
-          <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center gap-2 text-xs text-zinc-500">
-              <li>
-                <Link to="/" className="hover:text-zinc-300 transition-colors">Home</Link>
-              </li>
-              <li><ChevronRight className="w-3 h-3 text-zinc-700" aria-hidden="true" /></li>
-              <li className="text-zinc-300">Service Areas</li>
-            </ol>
-          </nav>
+          <Breadcrumbs items={[{ name: 'Home', to: '/' }, { name: 'Service Areas' }]} />
 
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500 mb-4">Service Areas</p>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white leading-[0.95] mb-6">

@@ -266,7 +266,11 @@ export default function Layout() {
         </div>
       </div>
 
-      <Outlet />
+      {/* Semantic main landmark: gives screen readers a skip target and marks
+          the primary content region for search engines' content extraction. */}
+      <main id="main">
+        <Outlet />
+      </main>
 
       {/* Footer */}
       <footer className="bg-[#0c0c0c] border-t border-zinc-900 pt-20 pb-10 px-6 md:px-12">

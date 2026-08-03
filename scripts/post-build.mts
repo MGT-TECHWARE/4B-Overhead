@@ -18,7 +18,7 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SITE_URL, ROUTES, type RouteKey } from '../src/seo/site';
+import { SITE_URL, BUSINESS, ROUTES, type RouteKey } from '../src/seo/site';
 import { CITIES, type City } from '../src/seo/cities';
 import { POSTS, type BlogPostMeta } from '../src/seo/posts';
 import {
@@ -38,7 +38,27 @@ interface RouteHeadInputs {
   canonical: string;
   ogUrl: string;
   jsonLd: string;
+  /** 'article' for blog posts, 'website' everywhere else. */
+  ogType?: 'website' | 'article';
+  /** Absolute URL. Defaults to the sitewide OG image. */
+  ogImage?: string;
+  ogImageAlt?: string;
+  /** ISO date — emitted as article:modified_time on article pages. */
+  modifiedTime?: string;
+  /** ISO date — emitted as article:published_time on article pages. */
+  publishedTime?: string;
 }
+
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+const DEFAULT_OG_ALT =
+  '4B Overhead Doors — premium residential and commercial garage doors in West and North Texas';
+
+/**
+ * Explicitly opt in to large image previews and uncapped snippets. Without
+ * max-image-preview:large Google serves a thumbnail-sized preview, which
+ * measurably suppresses CTR for a visual trade like garage doors.
+ */
+const ROBOTS_DIRECTIVE = 'index, follow, max-image-preview:large, max-snippet:-1';
 
 interface AssetIndex {
   /** Desktop hero (1280w) hashed URL. */
@@ -89,7 +109,18 @@ async function buildAssetIndex(distRoot: string): Promise<AssetIndex> {
 }
 
 function buildHead(inputs: RouteHeadInputs, opts?: { assets?: AssetIndex; isHome?: boolean }): string {
-  const { title, description, canonical, ogUrl, jsonLd } = inputs;
+  const {
+    title,
+    description,
+    canonical,
+    ogUrl,
+    jsonLd,
+    ogType = 'website',
+    ogImage = DEFAULT_OG_IMAGE,
+    ogImageAlt = DEFAULT_OG_ALT,
+    modifiedTime,
+    publishedTime
+  } = inputs;
 
   const preloads: string[] = [];
 
@@ -120,25 +151,44 @@ function buildHead(inputs: RouteHeadInputs, opts?: { assets?: AssetIndex; isHome
   // We REPLACE those rather than append, to avoid duplicate-tag confusion in
   // SERPs and validators. The canonical and JSON-LD are appended (they don't
   // exist in the source).
+  // article:* tags are only meaningful on og:type=article.
+  const articleTags =
+    ogType === 'article'
+      ? `\n    <meta property="article:published_time" content="${publishedTime ?? ''}" />
+    <meta property="article:modified_time" content="${modifiedTime ?? publishedTime ?? ''}" />
+    <meta property="article:author" content="Colten Beaty" />
+    <meta property="article:publisher" content="https://www.facebook.com/4BGarageDoors" />`
+      : '';
+
   return `${preloadTag}<title>${title}</title>
     <meta name="description" content="${escapeAttr(description)}" />
     <link rel="canonical" href="${canonical}" />
+    <meta name="robots" content="${ROBOTS_DIRECTIVE}" />
 
-    <meta property="og:type" content="website" />
+    <meta name="author" content="4B Overhead Doors, LLC" />
+    <meta name="geo.region" content="US-TX" />
+    <meta name="geo.placename" content="Wichita Falls, Texas" />
+    <meta name="geo.position" content="${BUSINESS.geoCenter.latitude};${BUSINESS.geoCenter.longitude}" />
+    <meta name="ICBM" content="${BUSINESS.geoCenter.latitude}, ${BUSINESS.geoCenter.longitude}" />
+
+    <meta property="og:type" content="${ogType}" />
     <meta property="og:site_name" content="4B Overhead Doors" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:url" content="${ogUrl}" />
     <meta property="og:title" content="${escapeAttr(title)}" />
     <meta property="og:description" content="${escapeAttr(description)}" />
-    <meta property="og:image" content="${SITE_URL}/og-image.jpg" />
+    <meta property="og:image" content="${ogImage}" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="4B Overhead Doors — premium residential and commercial garage doors in West and North Texas" />
+    <meta property="og:image:alt" content="${escapeAttr(ogImageAlt)}" />${articleTags}
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeAttr(title)}" />
     <meta name="twitter:description" content="${escapeAttr(description)}" />
-    <meta name="twitter:image" content="${SITE_URL}/og-image.jpg" />
+    <meta name="twitter:image" content="${ogImage}" />
+    <meta name="twitter:image:alt" content="${escapeAttr(ogImageAlt)}" />
+
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
     <script type="application/ld+json">${jsonLd}</script>`;
 }
@@ -155,7 +205,11 @@ function injectInto(template: string, head: string, inlineCss?: AssetIndex['inli
     .replace(/<meta\s+name=["']description["'][^>]*>\s*/gi, '')
     .replace(/<meta\s+property=["']og:[^"']+["'][^>]*>\s*/gi, '')
     .replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*>\s*/gi, '')
+    .replace(/<meta\s+name=["']robots["'][^>]*>\s*/gi, '')
+    .replace(/<meta\s+name=["'](?:geo\.[^"']+|ICBM|author)["'][^>]*>\s*/gi, '')
+    .replace(/<meta\s+property=["']article:[^"']+["'][^>]*>\s*/gi, '')
     .replace(/<link\s+rel=["']canonical["'][^>]*>\s*/gi, '')
+    .replace(/<link\s+rel=["']sitemap["'][^>]*>\s*/gi, '')
     .replace(/<script\s+type=["']application\/ld\+json["'][^<]*<\/script>\s*/gi, '');
 
   if (inlineCss) {
@@ -235,6 +289,39 @@ async function processCity(
   return outPath;
 }
 
+/**
+ * Render a real 1200×630 OG card per blog post from that post's hero photo.
+ *
+ * Before this, every post shared the sitewide og-image.jpg — so nine different
+ * articles produced an identical social/AI preview card. The hero photos are
+ * arbitrary aspect ratios, hence the cover-crop: the meta tags hard-declare
+ * 1200×630, and a mismatch there makes scrapers letterbox or reject the image.
+ *
+ * Returns the absolute og:image URL, falling back to the sitewide card if the
+ * source photo is missing so a bad filename can never fail the build.
+ */
+async function generatePostOgImage(post: BlogPostMeta): Promise<string> {
+  const source = resolve(__dirname, '..', 'src', 'assets', 'gallery', post.heroImage);
+  const outDir = join(DIST, 'og');
+  const outPath = join(outDir, `${post.slug}.jpg`);
+
+  try {
+    const { default: sharp } = await import('sharp');
+    await mkdir(outDir, { recursive: true });
+    await sharp(source)
+      .resize(1200, 630, { fit: 'cover', position: 'attention' })
+      .jpeg({ quality: 82, mozjpeg: true })
+      .toFile(outPath);
+    return `${SITE_URL}/og/${post.slug}.jpg`;
+  } catch (err) {
+    console.warn(
+      `[post-build] OG image fallback for "${post.slug}" (${post.heroImage}):`,
+      err instanceof Error ? err.message : err
+    );
+    return DEFAULT_OG_IMAGE;
+  }
+}
+
 async function processPost(
   post: BlogPostMeta,
   indexTemplate: string,
@@ -242,13 +329,19 @@ async function processPost(
 ): Promise<string> {
   const path = `/blog/${post.slug}`;
   const canonical = fullUrl(path);
+  const ogImage = await generatePostOgImage(post);
   const head = buildHead(
     {
       title: post.metaTitle,
       description: post.description,
       canonical,
       ogUrl: canonical,
-      jsonLd: jsonLdStringPost(post)
+      jsonLd: jsonLdStringPost(post),
+      ogType: 'article',
+      ogImage,
+      ogImageAlt: post.heroAlt,
+      publishedTime: post.date,
+      modifiedTime: post.updated ?? post.date
     },
     { assets, isHome: false }
   );
@@ -262,28 +355,40 @@ async function processPost(
 
 async function generateSitemap(): Promise<string> {
   const today = new Date().toISOString().slice(0, 10);
-  const entries: Array<{ loc: string; priority: string; changefreq: string }> = [];
+  const entries: Array<{
+    loc: string;
+    priority: string;
+    changefreq: string;
+    lastmod: string;
+  }> = [];
 
+  // Route and city pages are regenerated on every deploy, so the build date is
+  // an honest lastmod for them. Blog posts are NOT — stamping an unchanged
+  // 2026 article with today's date on every deploy is a false freshness signal
+  // that Google learns to discount, so each post reports its own real date.
   for (const key of Object.keys(ROUTES) as RouteKey[]) {
     const route = ROUTES[key];
     entries.push({
       loc: fullUrl(route.path),
       priority: route.path === '/' ? '1.0' : '0.8',
-      changefreq: route.path === '/' ? 'weekly' : 'monthly'
+      changefreq: route.path === '/' ? 'weekly' : 'monthly',
+      lastmod: today
     });
   }
   for (const city of CITIES) {
     entries.push({
       loc: fullUrl(`/service-areas/${city.slug}`),
       priority: '0.7',
-      changefreq: 'monthly'
+      changefreq: 'monthly',
+      lastmod: today
     });
   }
   for (const post of POSTS) {
     entries.push({
       loc: fullUrl(`/blog/${post.slug}`),
       priority: '0.6',
-      changefreq: 'monthly'
+      changefreq: 'monthly',
+      lastmod: post.updated ?? post.date
     });
   }
 
@@ -293,7 +398,7 @@ ${entries
   .map(
     e => `  <url>
     <loc>${e.loc}</loc>
-    <lastmod>${today}</lastmod>
+    <lastmod>${e.lastmod}</lastmod>
     <changefreq>${e.changefreq}</changefreq>
     <priority>${e.priority}</priority>
   </url>`

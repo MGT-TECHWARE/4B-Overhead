@@ -6,6 +6,7 @@ import { BODIES } from './blog/content';
 import type { Block } from './blog/blocks';
 import { galleryUrl } from './blog/galleryUrls';
 import { blogHeroUrl } from './blog/heroUrls';
+import Breadcrumbs from './Breadcrumbs';
 
 function formatDate(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number);
@@ -161,11 +162,13 @@ export default function BlogPost() {
       {/* Header */}
       <header className="pt-32 md:pt-40 px-6 md:px-12">
         <div className="max-w-3xl mx-auto">
-          <nav className="flex items-center gap-2 text-sm text-zinc-500 mb-6">
-            <Link to="/" className="hover:text-white transition-colors">Home</Link>
-            <span>/</span>
-            <Link to="/blog" className="hover:text-white transition-colors">Blog</Link>
-          </nav>
+          <Breadcrumbs
+            items={[
+              { name: 'Home', to: '/' },
+              { name: 'Blog', to: '/blog' },
+              { name: post.title }
+            ]}
+          />
           <span className="inline-block text-[11px] font-bold uppercase tracking-[0.15em] text-zinc-950 bg-white px-2.5 py-1 rounded-full mb-5">
             {post.category}
           </span>
