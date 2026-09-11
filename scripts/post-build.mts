@@ -63,7 +63,7 @@ const DEFAULT_OG_ALT =
 const ROBOTS_DIRECTIVE = 'index, follow, max-image-preview:large, max-snippet:-1';
 
 interface AssetIndex {
-  /** Desktop hero (1280w) hashed URL. */
+  /** Desktop hero (1920w) hashed URL. */
   hero?: string;
   /** Mobile hero (768w) hashed URL. */
   heroMobile?: string;
@@ -82,10 +82,10 @@ async function buildAssetIndex(distRoot: string): Promise<AssetIndex> {
   const { readdir } = await import('node:fs/promises');
   try {
     const files = await readdir(join(distRoot, 'assets'));
-    const heroMobile = files.find(f => /^hero-garage-768-[\w-]+\.webp$/.test(f));
+    const heroMobile = files.find(f => /^hero-september-mobile-[\w-]+\.webp$/.test(f));
     // Match desktop hero only — exclude the -768- mobile variant.
     const hero = files.find(
-      f => /^hero-garage-[\w-]+\.webp$/.test(f) && !/^hero-garage-768/.test(f)
+      f => /^hero-september-wide-[\w-]+\.webp$/.test(f) && !/^hero-september-mobile/.test(f)
     );
     // The latin variable-axis Inter weight file is what English text needs.
     // @fontsource-variable/inter emits inter-latin-wght-normal-XXXX.woff2.
@@ -139,7 +139,7 @@ function buildHead(inputs: RouteHeadInputs, opts?: { assets?: AssetIndex; isHome
     const mobile = opts.assets.heroMobile;
     if (mobile) {
       preloads.push(
-        `<link rel="preload" as="image" type="image/webp" imagesrcset="${mobile} 768w, ${desktop} 1280w" imagesizes="100vw" fetchpriority="high" />`
+        `<link rel="preload" as="image" type="image/webp" href="${mobile}" media="(max-width: 1023px)" fetchpriority="high" />\n    <link rel="preload" as="image" type="image/webp" href="${desktop}" media="(min-width: 1024px)" fetchpriority="high" />`
       );
     } else {
       preloads.push(

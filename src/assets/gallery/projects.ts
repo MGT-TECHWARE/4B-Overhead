@@ -15,6 +15,12 @@ export interface ProjectMeta {
 }
 
 export const PROJECTS: ReadonlyArray<ProjectMeta> = [
+  {"file": "september-2026-4505.webp", "title": "Black Glass-Panel Door With Stone Accents", "category": "Commercial", "featured": true},
+  {"file": "september-2026-4470.webp", "title": "Dark Woodgrain Double and Single Garage Doors", "category": "Residential", "featured": true},
+  {"file": "september-2026-4478.webp", "title": "Raised Sectional Door Inside Insulated Shop", "category": "Commercial", "featured": false},
+  {"file": "september-2026-4484.webp", "title": "White Overhead Door on Dark Metal Building", "category": "Commercial", "featured": false},
+  {"file": "september-2026-4511.webp", "title": "Dark Overhead Door With Windows on Metal Shop", "category": "Commercial", "featured": false},
+  {"file": "september-2026-4538.webp", "title": "White Windowed Doors Along Multi-Bay Shop", "category": "Commercial", "featured": true},
   { file: "image-copy.webp", title: "White Panel Two-Car Garage Doors", category: "Residential", featured: true },
   { file: "image.webp", title: "Black Rolling Steel Door", category: "Commercial", featured: false },
   { file: "image-copy-2.webp", title: "Black Double Panel Garage Door", category: "Residential", featured: true },

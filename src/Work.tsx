@@ -25,7 +25,11 @@ interface GalleryItem {
 
 const metaByFile = new Map(PROJECTS.map(p => [p.file, p]));
 
-const items: GalleryItem[] = GALLERY.map((entry, i) => {
+// Keep the latest project photos visible in the first gallery batch.
+const orderedGallery = [...GALLERY].sort((a, b) =>
+  Number(b.file.startsWith('september-2026-')) - Number(a.file.startsWith('september-2026-'))
+);
+const items: GalleryItem[] = orderedGallery.map((entry, i) => {
   const meta = metaByFile.get(entry.file);
   const title = meta?.title ?? `Project ${i + 1}`;
   return {

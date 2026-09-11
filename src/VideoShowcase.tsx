@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react';
 import { Play } from 'lucide-react';
+import septemberVideo from './assets/work-video-september-4544.mp4';
+import septemberPoster from './assets/work-video-september-4544-poster.webp';
 import video1 from './assets/work-video-1.mp4';
 import video2 from './assets/work-video-2.mp4';
 import video3 from './assets/work-video-3.mp4';
@@ -14,6 +16,7 @@ interface Clip {
 }
 
 const clips: Clip[] = [
+  { src: septemberVideo, poster: septemberPoster, title: 'Overhead Doors on a Metal Shop' },
   { src: video1, poster: poster1, title: 'Two-Car Brick Home' },
   { src: video2, poster: poster2, title: 'Detached Double Garage' },
   { src: video3, poster: poster3, title: 'Twin-Bay Garage' }
@@ -85,8 +88,8 @@ export default function VideoShowcase() {
           </p>
         </div>
 
-        {/* Portrait reels: horizontal scroll on mobile, 3-up grid on desktop */}
-        <div className="flex md:grid md:grid-cols-3 gap-4 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory -mx-6 px-6 md:mx-0 md:px-0 pb-2 md:pb-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        {/* Portrait reels: horizontal scroll on mobile, 4-up grid on desktop */}
+        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory -mx-6 px-6 md:mx-0 md:px-0 pb-2 md:pb-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           {clips.map(clip => (
             <div key={clip.src} className="snap-center shrink-0 w-[76%] sm:w-[46%] md:w-auto">
               <VideoCard clip={clip} />

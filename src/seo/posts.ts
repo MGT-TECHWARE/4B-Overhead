@@ -54,6 +54,7 @@ export const POSTS: ReadonlyArray<BlogPostMeta> = [
     primaryKeyword: 'garage door cost texas',
     category: 'Buying Guide',
     date: '2026-05-20',
+    updated: '2026-09-10',
     readMinutes: 7,
     heroImage: 'image-copy.webp',
     heroAlt: 'New white two-car garage doors installed on a Texas home by 4B Overhead Doors',
@@ -84,6 +85,7 @@ export const POSTS: ReadonlyArray<BlogPostMeta> = [
     primaryKeyword: 'broken garage door spring',
     category: 'Repair',
     date: '2026-06-03',
+    updated: '2026-09-10',
     readMinutes: 6,
     heroImage: 'image-copy-39.webp',
     heroAlt: 'Garage door panel and hardware replacement in progress by 4B Overhead Doors',
@@ -114,6 +116,7 @@ export const POSTS: ReadonlyArray<BlogPostMeta> = [
     primaryKeyword: "garage door won't open",
     category: 'Repair',
     date: '2026-06-12',
+    updated: '2026-09-10',
     readMinutes: 7,
     heroImage: 'image-copy-68.webp',
     heroAlt: 'Black two-car garage doors on a stone-front Texas home installed by 4B Overhead Doors',
@@ -264,6 +267,7 @@ export const POSTS: ReadonlyArray<BlogPostMeta> = [
     primaryKeyword: 'garage door maintenance',
     category: 'Maintenance',
     date: '2026-07-08',
+    updated: '2026-09-10',
     readMinutes: 6,
     heroImage: 'image-copy-14.webp',
     heroAlt: 'Two white garage doors on a brick Texas home maintained by 4B Overhead Doors',
@@ -312,7 +316,239 @@ export const POSTS: ReadonlyArray<BlogPostMeta> = [
         a: 'They need proper jamb and header framing to mount the tracks and carry the door’s weight. Getting the rough opening and framing right is the difference between a door that seals cleanly and one that lets in dust and weather. We can advise before your build.'
       }
     ]
-  }
+  },
+{
+  "slug": "garage-door-repair-weatherford-service-call",
+  "title": "Garage Door Repair in Weatherford: What to Know Before You Call",
+  "metaTitle": "Garage Door Repair in Weatherford: A Guide | 4B Overhead",
+  "description": "Need garage door repair in Weatherford, TX? Learn what to report, when to stop using the door, and what to ask before approving a repair.",
+  "excerpt": "Need garage door repair in Weatherford, TX? Learn what to report, when to stop using the door, and what to ask before approving a repair.",
+  "primaryKeyword": "garage door repair Weatherford TX",
+  "category": "Repair",
+  "date": "2026-08-04",
+  "updated": "2026-09-10",
+  "readMinutes": 3,
+  "heroImage": "image-copy-46.webp",
+  "heroAlt": "White raised-panel garage door on a brick garage shaded by trees",
+  "related": [
+    "broken-garage-door-spring-signs",
+    "garage-door-wont-open",
+    "garage-door-replacement-parker-county"
+  ],
+  "faqs": [
+    {
+      "q": "What information helps when booking garage door repair in Weatherford?",
+      "a": "Share your location, whether the door is open or closed, what happened before the failure, and any visible damage. Photos taken from a safe distance and the opener model can help the technician prepare."
+    },
+    {
+      "q": "Does an emergency call guarantee same-day repair?",
+      "a": "No. Arrival and completion depend on scheduling, travel, the condition of the door, and available parts. Call (940) 781-1186 for current availability and an estimated arrival time."
+    }
+  ]
+},
+{
+  "slug": "garage-door-replacement-parker-county",
+  "title": "Garage Door Replacement in Parker County: Compare Your Quotes",
+  "metaTitle": "Garage Door Replacement in Parker County | 4B Overhead",
+  "description": "Comparing garage door replacement quotes in Parker County? Check door specifications, opener compatibility, removal, installation, and warranty details.",
+  "excerpt": "Comparing garage door replacement quotes in Parker County? Check door specifications, opener compatibility, removal, installation, and warranty details.",
+  "primaryKeyword": "garage door replacement Parker County",
+  "category": "Buying Guide",
+  "date": "2026-08-11",
+  "updated": "2026-09-10",
+  "readMinutes": 3,
+  "heroImage": "image-copy-66.webp",
+  "heroAlt": "Tan carriage-style double garage door beneath a metal roof",
+  "related": [
+    "garage-door-cost-texas",
+    "insulated-vs-non-insulated-garage-doors",
+    "clopay-garage-door-panel-replacement-weatherford"
+  ],
+  "faqs": [
+    {
+      "q": "Should a garage door replacement quote include an opener?",
+      "a": "The quote should explicitly say whether an opener is included, reused, or priced separately. Ask the installer to check compatibility with the new door."
+    },
+    {
+      "q": "What should I compare besides the installation price?",
+      "a": "Compare the exact door model, construction, windows, hardware, removal, opener work, warranty terms, and any excluded repairs to the opening."
+    }
+  ]
+},
+{
+  "slug": "commercial-overhead-door-repair-weatherford",
+  "title": "Commercial Overhead Door Repair in Weatherford: A Downtime Plan",
+  "metaTitle": "Commercial Door Repair in Weatherford | 4B Overhead",
+  "description": "A commercial overhead door down in Weatherford? Learn what to document, how to plan access, and what to ask about repair, parts, and maintenance.",
+  "excerpt": "A commercial overhead door down in Weatherford? Learn what to document, how to plan access, and what to ask about repair, parts, and maintenance.",
+  "primaryKeyword": "commercial overhead door repair Weatherford TX",
+  "category": "Commercial",
+  "date": "2026-08-18",
+  "updated": "2026-09-10",
+  "readMinutes": 3,
+  "heroImage": "image-copy-47.webp",
+  "heroAlt": "Four white commercial overhead bay doors with marked vehicle clearances",
+  "related": [
+    "commercial-overhead-door-types",
+    "fall-garage-door-maintenance-wichita-falls",
+    "garage-door-repair-weatherford-service-call"
+  ],
+  "faqs": [
+    {
+      "q": "Does commercial door repair include every type of business door?",
+      "a": "No. This guide covers sectional overhead doors and rolling service doors. Storefront entry doors, automatic pedestrian doors, and specialized fire-door systems require the appropriate service scope to be confirmed separately."
+    },
+    {
+      "q": "What should a facility manager report about a failed overhead door?",
+      "a": "Report the affected bay, door type, position, visible damage, operator model, site access requirements, and whether another entrance can keep operations moving."
+    }
+  ]
+},
+{
+  "slug": "garage-door-wont-close-afternoon-sun",
+  "title": "Garage Door Won’t Close in Afternoon Sun? What to Check",
+  "metaTitle": "Garage Door Won’t Close in Sunlight? | 4B Overhead",
+  "description": "Does your garage door refuse to close in afternoon sun? Learn how to document sensor symptoms, check for obstructions, and arrange a safe repair.",
+  "excerpt": "Does your garage door refuse to close in afternoon sun? Learn how to document sensor symptoms, check for obstructions, and arrange a safe repair.",
+  "primaryKeyword": "garage door won’t close in sunlight",
+  "category": "Repair",
+  "date": "2026-08-21",
+  "updated": "2026-09-10",
+  "readMinutes": 3,
+  "heroImage": "image-copy-76.webp",
+  "heroAlt": "Two white garage doors on a stucco garage in direct sunlight",
+  "related": [
+    "garage-door-wont-open",
+    "garage-door-repair-weatherford-service-call",
+    "garage-door-opener-guide"
+  ],
+  "faqs": [
+    {
+      "q": "Can sunlight interfere with garage door safety sensors?",
+      "a": "Yes. Direct sunlight can affect the receiving sensor on some systems. LiftMaster offers a sunblocker kit for compatible equipment, but other faults can produce similar symptoms."
+    },
+    {
+      "q": "Should I bypass the sensors if sunlight is the problem?",
+      "a": "No. Keep the safety system functional. Have the cause checked and use only a solution compatible with the opener and its instructions."
+    }
+  ]
+},
+{
+  "slug": "clopay-garage-door-panel-replacement-weatherford",
+  "title": "Clopay Garage Door Panel Replacement in Weatherford: What to Check",
+  "metaTitle": "Clopay Panel Replacement in Weatherford | 4B Overhead",
+  "description": "Have a damaged Clopay garage door in Weatherford? Learn what determines panel availability and what to compare before choosing repair or replacement.",
+  "excerpt": "Have a damaged Clopay garage door in Weatherford? Learn what determines panel availability and what to compare before choosing repair or replacement.",
+  "primaryKeyword": "Clopay garage door panel replacement Weatherford",
+  "category": "Buying Guide",
+  "date": "2026-08-25",
+  "updated": "2026-09-10",
+  "readMinutes": 3,
+  "heroImage": "image-copy-52.webp",
+  "heroAlt": "Two white sectional garage doors showing their raised-panel design",
+  "related": [
+    "garage-door-replacement-parker-county",
+    "garage-door-cost-texas",
+    "garage-door-repair-weatherford-service-call"
+  ],
+  "faqs": [
+    {
+      "q": "Can one damaged Clopay garage door panel be replaced?",
+      "a": "Possibly. Clopay says replacement sections are available for steel and wood models it still manufactures. The exact model, size, condition, and compatible section availability need to be checked."
+    },
+    {
+      "q": "Does this guide mean 4B is an authorized Clopay dealer?",
+      "a": "No. This is guidance for owners of an existing Clopay door. Call 4B to confirm service scope and parts sourcing for your model; use Clopay’s own dealer resources for authorized-dealer information."
+    }
+  ]
+},
+{
+  "slug": "garage-door-weather-seal-replacement-north-texas",
+  "title": "Garage Door Weather Seal Replacement: Gaps, Dust, and Water",
+  "metaTitle": "Garage Door Weather Seal Replacement | 4B Overhead",
+  "description": "Seeing daylight or debris under your garage door? Learn what to check before weather seal replacement and when gaps call for a door inspection.",
+  "excerpt": "Seeing daylight or debris under your garage door? Learn what to check before weather seal replacement and when gaps call for a door inspection.",
+  "primaryKeyword": "garage door weather seal replacement",
+  "category": "Maintenance",
+  "date": "2026-08-28",
+  "updated": "2026-09-10",
+  "readMinutes": 3,
+  "heroImage": "image-copy-43.webp",
+  "heroAlt": "White sectional garage door framed by red trim on a tan outbuilding",
+  "related": [
+    "garage-door-maintenance-checklist",
+    "insulated-vs-non-insulated-garage-doors",
+    "garage-door-replacement-parker-county"
+  ],
+  "faqs": [
+    {
+      "q": "Will a new bottom seal fix every gap under a garage door?",
+      "a": "No. The seal profile, door alignment, and floor condition all matter. A new strip may not solve a large uneven gap or water coming from another source."
+    },
+    {
+      "q": "Is a bottom seal the same as a threshold?",
+      "a": "No. A bottom seal attaches to the door; a threshold attaches to the floor. Side and top weatherstripping seal the perimeter of the opening."
+    }
+  ]
+},
+{
+  "slug": "choosing-garage-door-repair-springtown-decatur",
+  "title": "Choosing Garage Door Repair in Springtown or Decatur",
+  "metaTitle": "Garage Door Repair: Springtown & Decatur | 4B Overhead",
+  "description": "Looking for garage door repair in Springtown or Decatur? Compare service availability, written estimates, repair scope, and warranty details before booking.",
+  "excerpt": "Looking for garage door repair in Springtown or Decatur? Compare service availability, written estimates, repair scope, and warranty details before booking.",
+  "primaryKeyword": "garage door repair Springtown TX",
+  "category": "Repair",
+  "date": "2026-09-03",
+  "updated": "2026-09-10",
+  "readMinutes": 3,
+  "heroImage": "image-copy-77.webp",
+  "heroAlt": "Brown double and single garage doors with windows on a brick home",
+  "related": [
+    "garage-door-repair-weatherford-service-call",
+    "broken-garage-door-spring-signs",
+    "garage-door-weather-seal-replacement-north-texas"
+  ],
+  "faqs": [
+    {
+      "q": "What should I ask a garage door repair company before booking?",
+      "a": "Confirm service to your address, the expected visit window, service-call charges, how repairs are approved, and what warranty documentation you will receive."
+    },
+    {
+      "q": "Can a repair company give an exact price from a phone description?",
+      "a": "A description may support an initial estimate, but the final scope can require an inspection. Ask what assumptions the estimate uses and require approval before additional work."
+    }
+  ]
+},
+{
+  "slug": "fall-garage-door-maintenance-wichita-falls",
+  "title": "Fall Garage Door Maintenance in Wichita Falls: Plan Your Service",
+  "metaTitle": "Fall Garage Door Maintenance: Wichita Falls | 4B Overhead",
+  "description": "Plan fall garage door maintenance in Wichita Falls with a safe visual checklist, service records, and the right questions for a professional tune-up.",
+  "excerpt": "Plan fall garage door maintenance in Wichita Falls with a safe visual checklist, service records, and the right questions for a professional tune-up.",
+  "primaryKeyword": "garage door maintenance Wichita Falls TX",
+  "category": "Maintenance",
+  "date": "2026-09-10",
+  "updated": "2026-09-10",
+  "readMinutes": 3,
+  "heroImage": "image-copy-79.webp",
+  "heroAlt": "Black garage door with decorative windows on a white brick home beneath trees",
+  "related": [
+    "garage-door-maintenance-checklist",
+    "garage-door-weather-seal-replacement-north-texas",
+    "commercial-overhead-door-repair-weatherford"
+  ],
+  "faqs": [
+    {
+      "q": "How should I prepare for a fall garage door tune-up?",
+      "a": "Gather the door and opener model, prior service records, and notes about noise, uneven movement, sensor faults, or damaged seals. Report visible mechanical damage before operating the door."
+    },
+    {
+      "q": "Should residential and commercial doors follow the same maintenance schedule?",
+      "a": "Not automatically. Follow the installed equipment’s instructions and have a technician consider usage and operating conditions when recommending a service interval."
+    }
+  ]
+}
 ] as const;
 
 export type BlogSlug = (typeof POSTS)[number]['slug'];

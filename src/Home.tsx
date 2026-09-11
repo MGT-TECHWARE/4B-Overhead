@@ -30,10 +30,8 @@ const FEATURED_CITIES = [
   'abilene', 'decatur', 'vernon', 'jacksboro'
 ].map(slug => CITIES.find(c => c.slug === slug)!).filter(Boolean);
 const ALL_CITY_COUNT = CITIES.length;
-import heroVideo from './assets/hero-video.mp4';
-import heroVideoMobile from './assets/hero-video-mobile.mp4';
-import heroPoster from './assets/hero-poster.webp';
-import heroPosterMobile from './assets/hero-poster-mobile.webp';
+import heroImage from './assets/hero-september-wide.webp';
+import heroImageMobile from './assets/hero-september-mobile.webp';
 import cardResidential from './assets/card-residential.webp';
 import cardCommercial from './assets/card-commercial.webp';
 import cardRepairs from './assets/card-repairs.webp';
@@ -402,39 +400,28 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative min-h-[720px] h-[100svh] flex flex-col justify-center items-center text-center px-6 pt-28 md:pt-36 pb-12">
-        <div className="absolute inset-0 overflow-hidden bg-zinc-950">
-          <video
-            ref={(el) => { if (el) el.playbackRate = 1.35; }}
-            src={heroVideoMobile}
-            poster={heroPosterMobile}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-label="Premium garage doors installed by 4B Overhead Doors"
-            className="md:hidden absolute inset-0 w-full h-full object-cover"
-          />
-          <video
-            ref={(el) => { if (el) el.playbackRate = 1.35; }}
-            src={heroVideo}
-            poster={heroPoster}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-label="Premium garage doors installed by 4B Overhead Doors"
-            className="hidden md:block absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-zinc-950/45 z-10"></div>
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-zinc-950 to-transparent z-10"></div>
+      <section className="relative grid grid-cols-1 bg-zinc-950 pt-24 lg:pt-0">
+        <div className="relative col-start-1 row-start-1">
+          <picture>
+            <source media="(min-width: 1024px)" srcSet={heroImage} width={1920} height={1080} />
+            <img
+              src={heroImageMobile}
+              width={768}
+              height={1024}
+              alt="Black glass-panel overhead door on a metal building with stone accents"
+              fetchPriority="high"
+              loading="eager"
+              decoding="async"
+              className="block w-full h-auto"
+            />
+          </picture>
+          <div className="hidden lg:block absolute inset-0 bg-zinc-950/45 z-10" />
+          <div className="hidden lg:block absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-zinc-950 to-transparent z-10" />
         </div>
 
-        <div className="relative z-20 max-w-4xl mx-auto flex flex-col items-center">
+        <div className="relative z-20 col-start-1 row-start-2 lg:row-start-1 flex flex-col items-center justify-center text-center px-6 py-12 lg:pt-28 lg:pb-8 xl:pt-36 xl:pb-12 w-full max-w-4xl mx-auto">
           <h1
-            className="hero-fade-up text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter leading-[1] md:leading-[0.92] text-white"
+            className="hero-fade-up text-5xl sm:text-6xl lg:text-6xl xl:text-8xl font-bold tracking-tighter leading-[1] md:leading-[0.92] text-white"
           >
             <span className="block">Premium Garage</span>
             <span className="block">Doors.</span>

@@ -88,4 +88,10 @@ export const GALLERY: ReadonlyArray<GalleryEntry> = [
   { file: "image-copy-83.webp", w: 960, h: 1280 },
   { file: "image-copy-84.webp", w: 1280, h: 960 },
   { file: "image-copy-85.webp", w: 960, h: 1280 },
+  { file: "september-2026-4470.webp", w: 1200, h: 1600 },
+  { file: "september-2026-4478.webp", w: 1200, h: 1600 },
+  { file: "september-2026-4484.webp", w: 1200, h: 1600 },
+  { file: "september-2026-4505.webp", w: 1200, h: 1600 },
+  { file: "september-2026-4511.webp", w: 1200, h: 1600 },
+  { file: "september-2026-4538.webp", w: 1200, h: 1600 },
 ];
